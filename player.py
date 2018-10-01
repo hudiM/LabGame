@@ -24,20 +24,27 @@ def turn(direction):
         if direction in ['left', 'bal', 'l']:
             facing -= 1
         elif direction == ['right', 'jobb', 'r']:
-            facing +=1
+            facing += 1
         else:
             return
     else:
         facing += direction
     facing %= 4
+    return #debug text for test
+
+def delPlayer():
+    level.world[y][x] = ' '
     return
 
 def move(direction):
     if direction == "forward":
         if facing == 0:
             if isPassable(x, y-1):
-                level.world[y][x] = ' '
+                delPlayer()
                 level.world[y-1][x] = 'P'
+        if facing == 1:
+            if isPassable(x+1, y):
+                level.world[y][x] = ' '
     return
 
 # def move(direction, world): # change to x,y is global
