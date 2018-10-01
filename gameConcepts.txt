@@ -1,0 +1,82 @@
+
+
+player:
+poziciót folyton menteni
+movement:
+	lépés:
+		előre "W"
+		hátra "S"
+	fordul:
+		jobbra "D"
+		balra "A"
+combat:
+	hit "E"
+
+Enemy:
+2 körönként léphet
+játékos hallása alapján kerget ( vissza felé olvasva)
+nem spawnolhat X-re
+T trigger
+F repeatable trigger
+
+Combat:
+	hp = 10
+	enemyhp = 2
+	ha nem hall "patrol":
+		2 körönként lép 1-et
+		vagy
+		egyhelyben áll
+	ha hall:
+		körönként lép 1-et
+	ha lát:
+		körönként lép 2-őt
+
+
+tutorialMap
+
+▓	-	wall
+/	-	invisible wall
+P	-	player
+L	-	low cover
+H	-	high cover
+
+		▓/////L/////▓								 ▓/////L/////▓
+		▓	  L	    ▓								 ▓	   L	 ▓
+		▓	  L		▓	     ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓	 	 ▓	   L     ▓
+		▓	  L		▓	     ▓	            ▓	 	 ▓	   L     ▓
+▓▓▓▓▓▓▓▓▓	  L  	▓▓▓    ▓▓▓	    		▓▓▓    ▓▓▓	   L     ▓
+/P L		  L	 	  ▓    ▓		 		  ▓    ▓	   L     ▓
+/ P    L      L   	  ▓▓▓▓▓▓		  		  ▓▓▓▓▓▓	   L     ▓
+▓▓▓▓▓▓▓▓▓	  L
+		▓	  L
+		▓     L
+		▓     L		   X
+		▓	  L		 XXXX
+	▓▓▓▓▓	  L		PXXXXX
+	▓	 	  L		 XXXX
+	▓		  L		   X
+	▓		  L
+	▓▓▓▓▓	  L
+		▓	  L
+		▓	  L
+		▓	  L
+		▓	  L
+▓▓▓▓▓▓▓▓▓	  L
+/ P			  L
+/			  L
+/ P			  L
+▓▓▓▓▓▓▓▓▓	  L
+		▓	  L
+		▓	   L
+		▓	    L
+		▓		 L
+		▓		  LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL		L
+		▓▓▓▓
+		   ▓▓
+		    ▓
+		    ▓▓▓▓▓▓▓▓▓▓     ▓▓▓▓▓▓▓▓▓▓	   ▓▓▓▓▓▓▓▓▓▓▓▓		L	  ▓
+					 ▓     ▓		▓	   ▓		  ▓		L	  ▓
+					 ▓▓▓▓▓▓▓		▓	   ▓	add	  ▓		L	  ▓
+					 				▓	   ▓  detail  ▓		L	  ▓
+									▓	   ▓  on the  ▓		L	  ▓
+									▓//////▓   left   ▓/////L/////▓

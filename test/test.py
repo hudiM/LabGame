@@ -1,2 +1,0 @@
-#dafuq
-print('LUL?')
