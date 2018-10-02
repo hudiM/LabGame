@@ -1,6 +1,6 @@
 import level, os, common, player, time, sys
 
-def main():
+def main(dev = 0):
     level.load_level(sys.path[0]+'/maps/devMap.txt')
     for i in level.world:
         print(i)
@@ -13,7 +13,7 @@ def main():
         if key == 'up':
             player.move('forward')
         if key == 'down':
-            player.move('down')
+            player.move('backward')
         if key == 'left':
             player.move('left')
         if key == 'right':

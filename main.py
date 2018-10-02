@@ -1,7 +1,7 @@
-import os, io, sys, level, player, globalLogic, color
+import os, globalLogic
 
 def main():
-    error = globalLogic.main()
+    error = globalLogic.main(1)
     return error
 
 os.system('clear')
