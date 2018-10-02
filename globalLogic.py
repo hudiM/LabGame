@@ -6,8 +6,7 @@ def main(dev=0):
         print(i)
     time.sleep(0.5)
     os.system('clear')
-    for i in level.world:
-        print(i)
+    level.paint_vision()
     while(1):
         key = keyboard.getch()
         print(key)
@@ -25,8 +24,6 @@ def main(dev=0):
         if key == '0':
             break
         os.system('clear')
-        for i in level.world:
-            print(i)
-        print(player.facing)
+        level.paint_vision()
     print(str(player.x) + '-' + str(player.y))
     return 1

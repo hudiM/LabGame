@@ -86,7 +86,6 @@ def paint_vision():
 
 def in_vision(source, viewDistance = 8.5):
     # vision = [[1,1],[1,2],[2,1],[2,2]] # Debug version
-    print("Source:",source)
     vision = []
     # Setting up maximum possible vision
     couldView = []
@@ -101,7 +100,6 @@ def in_vision(source, viewDistance = 8.5):
                     couldView.append([i,j])
     
     # Testing if in view
-    print(couldView)
     for coord in couldView:
         if check_visibility([source[0],source[1]],coord):
             vision.append(coord)
