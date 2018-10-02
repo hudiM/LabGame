@@ -8,6 +8,7 @@ import player, enemy, os, math, time
 
 direction_index = ["▲", "►", "▼", "◄"]
 world = []
+facingConstant = 0.0
 
 def load_level(file):
     global world
@@ -53,7 +54,7 @@ def paint_level():
 def paint_vision():
     os.system("clear")
     paint = ""
-    vision = in_vision([player.y,player.x])
+    vision = in_vision([player.y,player.x,player.facing])
     # walls = [] # For debugging purposes
     
     for i in range(0, len(world)):
@@ -101,16 +102,18 @@ def in_vision(source, viewDistance = 8.5):
     
     # Testing if in view
     for coord in couldView:
-        if check_visibility([source[0],source[1]],coord):
-            vision.append(coord)
+        angle = (( get_angle([source[0],source[1]],coord) + ( source[2] + 
+            facingConstant ) * math.pi/2 ) % ( math.pi * 2 ) )
+        if angle < math.pi * 1.3 and angle > math.pi * 0.7:
+            if check_visibility([source[0],source[1]],coord):
+                vision.append(coord)
 
     # At the end add area around player in a 3x3 area
-    areaAroundPlayer = []
 
     for i in range(0,3):
         for j in range(0,3):
-            extraVision = [source[1] - 1 + i, source[0] -1 + j]
-            if extraVision not in vision and False:
+            extraVision = [source[0] - 1 + i, source[1] -1 + j]
+            if extraVision not in vision:
                 vision.append(extraVision)
 
     return vision
