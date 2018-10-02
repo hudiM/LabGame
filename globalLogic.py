@@ -1,4 +1,4 @@
-import level, os, common, player, time, sys
+import level, os, common, player, time, sys, keyboard
 
 def main(dev=0):
     level.load_level(sys.path[0]+'/maps/devMap.txt')
@@ -9,20 +9,24 @@ def main(dev=0):
     for i in level.world:
         print(i)
     while(1):
-        key = common.keyInput()
-        if key == 'up':
-            player.move('forward')
-        if key == 'down':
-            player.move('down')
-        if key == 'left':
-            player.move('left')
-        if key == 'right':
-            player.move('right')
-        if key == 'esc':
+        key = keyboard.getch()
+        print(key)
+        if key == 'w':
+            print('Debug: W')
+            player.move("forward")
+        if key == "a":
+            print('Debug: A')
+            player.turn("left")
+        if key == "d":
+            print('Debug: D')
+            player.turn("right")
+        if key == "e":
+            print(player.facing)
+        if key == '0':
             break
-        time.sleep(2)
         os.system('clear')
         for i in level.world:
             print(i)
+        print(player.facing)
     print(str(player.x) + '-' + str(player.y))
     return 1

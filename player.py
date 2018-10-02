@@ -9,7 +9,6 @@ def spawn(locX, locY):
     return world
 
 def isPassable(a, b):
-    print(str(a)+'-'+str(b))
     if level.world[b][a] == '#':
         return 0
     return 1
@@ -20,73 +19,51 @@ def isTrigger(a, b):
     return 0
 
 def turn(direction):
+    global facing
     if type(direction) == str:
         if direction in ['left', 'bal', 'l']:
-            facing -= 1
-        elif direction == ['right', 'jobb', 'r']:
-            facing += 1
-        else:
-            return
+            if facing == 0:
+                facing = 3
+            else:
+                facing -= 1
+        if direction in ['right', 'jobb', 'r']:
+            print('DEBUG: right')
+            if facing == 3:
+                facing = 0
+            else:
+                facing += 1
     else:
-        facing += direction
-    facing %= 4
-    return #debug text for test
+        facing = direction
+    return
 
 def delPlayer():
     level.world[y][x] = ' '
     return
 
 def move(direction):
+    global x
+    global y
     if direction == "forward":
         if facing == 0:
             if isPassable(x, y-1):
                 delPlayer()
                 level.world[y-1][x] = 'P'
-        if facing == 1:
+                y-=1
+        elif facing == 1:
             if isPassable(x+1, y):
-                level.world[y][x] = ' '
+                delPlayer()
+                level.world[y][x+1] = 'P'
+                x+=1
+        elif facing == 2:
+            if isPassable(x, y+1):
+                delPlayer()
+                level.world[y+1][x] = 'P'
+                y+=1
+        elif facing == 3:
+            if isPassable(x-1, y):
+                delPlayer()
+                level.world[y][x-1] = 'P'
+                x-=1
+        else:
+            common.printErr('Wrong facing')
     return
-
-# def move(direction, world): # change to x,y is global
-#     if direction == 'up':
-#         for y in range(len(world)):
-#             for p in world[y]:
-#                 if p == 'P':
-#                     x = world[y].index('P')
-#                     if isPassable(world, x, y-1) == 1:
-#                         world[y][x] = ' '
-#                         world[y-1][x] = 'P'
-#                     return world
-#         return world
-#     if direction == 'down':
-#         for y in range(len(world)):
-#             for p in world[y]:
-#                 if p == 'P':
-#                     x = world[y].index('P')
-#                     if isPassable(world, x, y+1) == 1:
-#                         world[y][x] = ' '
-#                         world[y+1][x] = 'P'
-#                     return world
-#         return world
-#     if direction == 'left':
-#         for y in range(len(world)):
-#             for p in world[y]:
-#                 if p == 'P':
-#                     x = world[y].index('P')
-#                     if isPassable(world, x-1, y) == 1:
-#                         world[y][x] = ' '
-#                         world[y][x-1] = 'P'
-#                     return world
-#         return world
-#     if direction == 'right':
-#         for y in range(len(world)):
-#             for p in world[y]:
-#                 if p == 'P':
-#                     x = world[y].index('P')
-#                     if isPassable(world, x+1, y) == 1:
-#                         world[y][x] = ' '
-#                         world[y][x+1] = 'P'
-#                     return world
-#         return world
-#     common.printErr('Unknown movement error')
-#     return world
