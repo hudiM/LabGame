@@ -50,6 +50,27 @@ def paint_level():
         paint += "\n"
     print(paint)
 
+def paint_vision():
+    for coord in in_vision():
+        tile = world[coord[1],coord[2]]
+        if tile in ["X"," ","T","F"]:
+            paint += "░"
+        elif tile in ["#"]:
+            paint += "▓"
+        elif tile in "P":
+            paint += direction_index[player.facing]
+
+        if j < len(world[i])-1:
+            try:
+                if tile in ["#"] and world[i][j+1] in ["#"]:
+                    paint += "▓"
+                else:
+                    paint += "░"
+            except:
+                pass
+
+def in_vision():
+    return [[1,1][1,2][2,1][2,2][3,1]]
 
 # Fal = ▓
 # Terep = ░
