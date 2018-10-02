@@ -1,6 +1,6 @@
 import level, os, common, player, time, sys
 
-def main():
+def main(dev=0):
     level.load_level(sys.path[0]+'/maps/devMap.txt')
     for i in level.world:
         print(i)
