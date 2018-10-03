@@ -41,23 +41,15 @@ def move(direction):
     if direction == "forward":
         if facing == 0:
             if isPassable(x, y-1):
-                delPlayer()
-                level.world[y-1][x] = 'P'
                 y-=1
         if facing == 1:
             if isPassable(x+1, y):
-                delPlayer()
-                level.world[y][x+1] = 'P'
                 x+=1
         if facing == 2:
             if isPassable(x, y+1):
-                delPlayer()
-                level.world[y+1][x] = 'P'
                 y+=1
         if facing == 3:
             if isPassable(x-1, y):
-                delPlayer()
-                level.world[y][x-1] = 'P'
                 x-=1
         else:
             common.printErr('Wrong facing')
