@@ -1,22 +1,17 @@
 import common, level
 
+enemies = []
+
 class Monster:
-    def __init__(self, health, y, x):
+    def __init__(self, health, y, x, facing):
         self.y = y
         self.x = x
         self.health = health
+        self.facing = facing
 
-m1 = Monster("John", 5, 5)
+def spawn(health, x, y, facing):
+    monster_id = Monster(10 ,5, 5, 0)
+    return monster_id
 
-
-def spawn(type, x, y):
-    if level.world[y][x] != ('X' | 'T' | 'F'):
-        pass
-    return
-
-def turn():
-
-    return
-def move():
-    
-    return
+m = spawn(10, 5, 5, 0)
+enemies.append(m)

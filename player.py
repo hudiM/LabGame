@@ -1,12 +1,18 @@
-import common, level, time, keyboard
+import common, level, time, keyboard, enemy
 
-x, y, facing, health = 0, 0, 0, 0
+x, y, facing, health = 0, 0, 0, 10
 hearZone = [[]]#[distance, x, y]
 
 def isPassable(a, b):
     if level.world[b][a] == '#':
         return 0
     return 1
+
+def isMonster(newX, newY):
+    for monster in enemy.enemies:
+        if newX == monster.x and newY == monster.y:
+            return 1
+    return 0
 
 def isTrigger(a, b):
     if level.world[b][a] == ('T' or 'X' or 'F'):
@@ -22,7 +28,6 @@ def turn(direction):
             else:
                 facing -= 1
         if direction in ['right', 'jobb', 'r']:
-            print('DEBUG: right')
             if facing == 3:
                 facing = 0
             else:
@@ -31,22 +36,28 @@ def turn(direction):
         facing = direction
     return
 
+def attack():
+    pass
+
 def move(direction):
-    global x
-    global y
+    global x,y
     if direction == "forward":
         if facing == 0:
-            if isPassable(x, y-1):
-                y-=1
-        if facing == 1:
-            if isPassable(x+1, y):
-                x+=1
-        if facing == 2:
-            if isPassable(x, y+1):
-                y+=1
-        if facing == 3:
-            if isPassable(x-1, y):
-                x-=1
+            if not isMonster(x, y-1):
+                if isPassable(x, y-1):
+                    y-=1
+        elif facing == 1:
+            if not isMonster(x+1, y):
+                if isPassable(x+1, y):
+                    x+=1
+        elif facing == 2:
+            if not isMonster(x, y+1):
+                if isPassable(x, y+1):
+                    y+=1
+        elif facing == 3:
+            if not isMonster(x-1, y):
+                if isPassable(x-1, y):
+                    x-=1
         else:
             common.printErr('Wrong facing')
     return
