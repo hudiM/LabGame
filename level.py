@@ -60,13 +60,15 @@ def paint_level():
 def paint_vision():
     os.system("clear")
     paint = ""
+    tempWorld = world
+    tempWorld[player.y][player.x] = "P"
     vision = in_vision([player.y,player.x,player.facing])
     # walls = [] # For debugging purposes
     
-    for i in range(0, len(world)):
-        for j in range(0,len(world[i])):
+    for i in range(0, len(tempWorld)):
+        for j in range(0,len(tempWorld[i])):
             if [i,j] in vision:
-                tile = world[i][j]
+                tile = tempWorld[i][j]
                 if tile in ["X"," ","T","F"]:
                     paint += "░"
                 elif tile in ["#"]:
@@ -75,9 +77,9 @@ def paint_vision():
                 elif tile in "P":
                     paint += direction_index[player.facing]
 
-                if j < len(world[i])-1:
+                if j < len(tempWorld[i])-1:
                     try:
-                        if tile in ["#"] and world[i][j+1] in ["#"]:
+                        if tile in ["#"] and tempWorld[i][j+1] in ["#"]:
                             paint += "▓"
                         else:
                             paint += "░"
