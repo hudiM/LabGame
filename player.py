@@ -1,12 +1,7 @@
-import common, level
+import common, level, time, keyboard
 
-x = 0
-y = 0
-facing = 0
-
-def spawn(locX, locY):
-    level.world[locY][locX] = 'P'
-    return world
+x, y, facing, health = 0, 0, 0, 0
+hearZone = [[]]#[distance, x, y]
 
 def isPassable(a, b):
     if level.world[b][a] == '#':
@@ -49,17 +44,17 @@ def move(direction):
                 delPlayer()
                 level.world[y-1][x] = 'P'
                 y-=1
-        elif facing == 1:
+        if facing == 1:
             if isPassable(x+1, y):
                 delPlayer()
                 level.world[y][x+1] = 'P'
                 x+=1
-        elif facing == 2:
+        if facing == 2:
             if isPassable(x, y+1):
                 delPlayer()
                 level.world[y+1][x] = 'P'
                 y+=1
-        elif facing == 3:
+        if facing == 3:
             if isPassable(x-1, y):
                 delPlayer()
                 level.world[y][x-1] = 'P'
