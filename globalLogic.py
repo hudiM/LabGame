@@ -7,9 +7,6 @@ def main(dev=0):
     # time.sleep(0.5)
     # os.system('clear')
     level.paint_vision()
-    value, zone = echo.read_zone([player.x,player.y] , 8)
-    print(value)
-    print(zone)
     while(1):
         key = keyboard.getch()
         print(key)

@@ -4,11 +4,14 @@
 
 #####PPP###################
 
-import player, enemy, os, math, time
+import player, enemy, os, math, time, echo
+from copy import deepcopy
 
 direction_index = ["▲", "►", "▼", "◄"]
 world = []
 facingConstant = 0.0
+baseColor = "\033[38;2;137;96;60m"
+monsterColor = "\033[38;2;200;0;0m"
 
 def load_level(fi):
     global world
@@ -32,6 +35,7 @@ def load_level(fi):
         player.y = 1
         player.facing = 2
                 
+# apint_level() is obsolete, only use for painting the level layout!
 def paint_level():
     os.system("clear")
     paint = ""
@@ -58,11 +62,17 @@ def paint_level():
     print(paint)
 
 def paint_vision():
-    os.system("clear")
-    paint = ""
-    tempWorld = world
+    # os.system("clear")
+    paint = baseColor
+    # creating a deep copy of the world for displayign purposes
+    tempWorld = deepcopy(world)
     tempWorld[player.y][player.x] = "P"
-    vision = in_vision([player.y,player.x,player.facing])
+    monsterID = 0
+    for monster in enemy.enemies:
+        tempWorld[monster.y][monster.x] = "M" + str(monsterID)
+        monsterID += 1
+    vision = in_vision([player.y,player.x,player.facing],3)
+    hearing = echo.read_zone([player.y,player.x], 5)
     # walls = [] # For debugging purposes
     
     for i in range(0, len(tempWorld)):
@@ -76,7 +86,11 @@ def paint_vision():
                     # walls.append([i,j]) # for debugging purposes
                 elif tile in "P":
                     paint += direction_index[player.facing]
+                elif tile[0] == "M":
+                    monsterID = int(tile[1:])
+                    paint += monsterColor + direction_index[enemy.enemies[monsterID].facing] + baseColor
 
+                # if the horizontal position is not the end then paint tiles between tiles
                 if j < len(tempWorld[i])-1:
                     try:
                         if tile in ["#"] and tempWorld[i][j+1] in ["#"]:
@@ -86,7 +100,14 @@ def paint_vision():
                     except:
                         pass
             else:
-                paint += " "
+                if [i,j] in hearing[1]:
+                    tile = tempWorld[i][j]
+                    if tile[0] == "M":
+                        paint += monsterColor + "■" + baseColor
+                    else:
+                        paint += " "
+                else:
+                    paint += " "
                 if j < len(world[i])-1:
                     paint += " "
         paint += "\n"
@@ -170,10 +191,12 @@ def check_visibility(source, target, step = 0.75, sensitivity = 0.5):
 def in_world(i,j):
     return (i >= 0 and j >= 0 and i < len(world) and j < len(world[i]) )
 
+
+
 # Fal = ▓
 # Terep = ░
 # Player/ Enemy = ▲ ► ▼ ◄
-# Enemy = E
+# Enemy in hearing range = ■
 # Exit = O
 
 # print(load_level("testmap.txt"))
