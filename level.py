@@ -10,21 +10,27 @@ direction_index = ["▲", "►", "▼", "◄"]
 world = []
 facingConstant = 0.0
 
-def load_level(file):
+def load_level(fi):
     global world
     world = []
     lineNum = 0
-    with open(file) as f:
+    with open(fi + ".ter") as f:
         for line in f:
             row = []
             for i in range(0,len(line)):
                 if line[i] != '\n':
                     row.append(line[i])
-                    if line[i] == 'P':
-                        player.x = i
-                        player.y = lineNum
+                    # if line[i] == 'P':
+                    #     player.x = i
+                    #     player.y = lineNum
             world.append(row)
             lineNum += 1
+
+    with open(fi + ".inf") as f:
+        # Temporary testing measures
+        player.x = 1
+        player.y = 1
+        player.facing = 2
                 
 def paint_level():
     os.system("clear")

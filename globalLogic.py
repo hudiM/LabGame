@@ -1,12 +1,15 @@
-import level, os, common, player, time, sys, keyboard
+import level, os, common, player, time, sys, keyboard, echo
 
 def main(dev=0):
-    level.load_level(sys.path[0]+'/maps/devMap.txt')
-    for i in level.world:
-        print(i)
-    time.sleep(0.5)
-    os.system('clear')
+    level.load_level(sys.path[0]+'/maps/devMap')
+    # for i in level.world:
+    #     print(i)
+    # time.sleep(0.5)
+    # os.system('clear')
     level.paint_vision()
+    value, zone = echo.read_zone([player.x,player.y] , 8)
+    print(value)
+    print(zone)
     while(1):
         key = keyboard.getch()
         print(key)
