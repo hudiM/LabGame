@@ -31,10 +31,6 @@ def turn(direction):
         facing = direction
     return
 
-def delPlayer():
-    level.world[y][x] = ' '
-    return
-
 def move(direction):
     global x
     global y
