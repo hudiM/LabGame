@@ -13,7 +13,7 @@ def read_zone(source,hearDistance):
                 x = int(math.cos(facing * math.pi/2) + hearingZone[element][1])
                 y = int(math.sin(facing * math.pi/2) + hearingZone[element][0])
                 # print("X",x,"Y",y)
-                if world[y][x] not in ["#"] and [y,x] not in hearingZone:
+                if world[y][x] not in ["#","E"] and [y,x] not in hearingZone:
                     hearingZone.append([y,x])
                     hearingDistance.append(step)
         currentElementID = lastElementID
