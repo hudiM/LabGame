@@ -8,8 +8,9 @@
             "name": "Python: Current File (Integrated Terminal)",
             "type": "python",
             "request": "launch",
+            "pythonPath": "/usr/bin/python3.6",
             "program": "/home/marci/LabGameRepo/LabGame/main.py",
-            "console": "integratedTerminal"
+            "console": "externalTerminal",
         },
         {
             "name": "Python: Attach",
