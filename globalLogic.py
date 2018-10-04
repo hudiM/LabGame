@@ -5,12 +5,13 @@ dev = 0
 
 def main():
     global stop, dev
-    level.load_level(sys.path[0]+'/maps/devMap')
+    level.load_level(sys.path[0]+'/maps/level1')
     print(f'Player Health: {player.health}')
     level.paint_vision()
-    # enemy.spawn(1,3,0,5) # debug enemy
-    # enemy.spawn(5,3,0,5) # debug enemy
+    #enemy.spawn(1,3,0,5) # debug enemy
+    #enemy.spawn(5,3,0,5) # debug enemy
     while(1):
+<<<<<<< HEAD
         if dev == 0:    # def mode 0
             level.paint_vision()
         elif dev == 1:
@@ -23,9 +24,11 @@ def main():
             for i in devMap:
                 print(''.join(i))
             print(f'Facing: {player.facing}')
+=======
+        print(f'Player Health: {player.health}')
+>>>>>>> 4f9bab264592605fbcd6f19266c1fc2066f8f93d
         key = keyboard.getch()
         os.system('clear')
-        print(f'Player Health: {player.health}')
         if key == 'w':
             # print('Debug: W')
             player.move("forward")
