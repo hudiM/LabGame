@@ -1,12 +1,3 @@
-<<<<<<< HEAD
-player 1 1
-triggers
-{
-}
-enemies
-{
-}
-=======
 player
 x 2
 y 2
@@ -18,4 +9,3 @@ y 5
 facing 0
 health 10
 end
->>>>>>> 04206942de3344129b488b4ce2a02b2b68a58d95
