@@ -12,6 +12,7 @@ world = []
 facingConstant = 0.0
 baseColor = "\033[38;2;130;150;132m"
 monsterColor = "\033[38;2;200;0;0m"
+exitColor = "\033[38;2;244;167;66m"
 
 def load_level(fi):
     global world
@@ -120,19 +121,11 @@ def paint_level():
     for i in range(0, len(tempWorld)):
         for j in range(0,len(tempWorld[i])):
             tile = tempWorld[i][j]
-            if tile in ["X"," ","T","F"]:
-                paint += "░"
-            elif tile in ["#"]:
-                paint += "▓"
-            elif tile in "P":
-                paint += direction_index[player.facing]
-            elif tile[0] == "M":
-                monsterID = int(tile[1:])
-                paint += monsterColor + direction_index[enemy.enemies[monsterID].facing] + baseColor
+            paint += paint_tile( tile )
 
-            if j < len(tempWorld[i])-1:
+            if j < len(world[i])-1:
                 try:
-                    if tile in ["#"] and tempWorld[i][j+1] in ["#"]:
+                    if tile in ["#"] and world[i][j+1] in ["#"]:
                         paint += "▓"
                     else:
                         paint += "░"
@@ -141,6 +134,21 @@ def paint_level():
 
         paint += "\n"
     print(paint)
+
+def paint_tile(tile):
+    paint = ""
+    if tile in ["X"," ","T","F"]:
+        paint += "░"
+    elif tile in ["#"]:
+        paint += "▓"
+    elif tile in ["E"]:
+        paint += exitColor + "░" + baseColor
+    elif tile in "P":
+        paint += direction_index[player.facing]
+    elif tile[0] == "M":
+        monsterID = int(tile[1:])
+        paint += monsterColor + direction_index[enemy.enemies[monsterID].facing] + baseColor
+    return paint
 
 def paint_vision():
     # os.system("clear")
@@ -160,22 +168,15 @@ def paint_vision():
         for j in range(0,len(tempWorld[i])):
             if [i,j] in vision:
                 tile = tempWorld[i][j]
-                if tile in ["X"," ","T","F"]:
-                    paint += "░"
-                elif tile in ["#"]:
-                    paint += "▓"
-                    # walls.append([i,j]) # for debugging purposes
-                elif tile in "P":
-                    paint += direction_index[player.facing]
-                elif tile[0] == "M":
-                    monsterID = int(tile[1:])
-                    paint += monsterColor + direction_index[enemy.enemies[monsterID].facing] + baseColor
+                paint += paint_tile( tile )
 
                 # if the horizontal position is not the end then paint tiles between tiles
                 if j < len(tempWorld[i])-1:
                     try:
                         if tile in ["#"] and tempWorld[i][j+1] in ["#"]:
                             paint += "▓"
+                        elif tile in ["E"] and tempWorld[i][j+1] in ["E"]:
+                            paint += exitColor + "░" + baseColor
                         else:
                             paint += "░"
                     except:
