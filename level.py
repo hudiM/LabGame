@@ -96,6 +96,7 @@ def load_level(fi):
                             enemy.spawn(enemy_x,enemy_y,enemy_facing,enemy_health)
                         except:
                             print("Failed to spawn enemy")
+                            time.sleep(0.5)
                         if "end" in line:
                             mode = "seek"
 
@@ -106,7 +107,7 @@ def load_level(fi):
         player.y = 1
         player.facing = 2
                 
-# apint_level() is obsolete, only use for painting the level layout!
+# paint_level() is obsolete, only use for painting the level layout!
 def paint_level():
     os.system("clear")
     paint = ""
@@ -125,6 +126,9 @@ def paint_level():
                 paint += "▓"
             elif tile in "P":
                 paint += direction_index[player.facing]
+            elif tile[0] == "M":
+                monsterID = int(tile[1:])
+                paint += monsterColor + direction_index[enemy.enemies[monsterID].facing] + baseColor
 
             if j < len(tempWorld[i])-1:
                 try:
