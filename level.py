@@ -38,67 +38,72 @@ def load_level(fi):
             notFound = []
             Found = []
             for line in f:
+                line = line[:-1].split(" ")
+                print(line)
+                time.sleep(0.01)
                 if mode == "seek":
-                    if "player" in line:
+                    if line[0] == "player":
                         mode = "player"
-                    elif "trigger" in line:
+                    elif line[0] == "trigger":
                         mode = "trigger"
-                    elif "enemy" in line:
+                    elif line[0] == "enemy":
+                        print("In Enemy Mode")
                         mode = "enemy"
                 # Looking for player properties
                 elif mode == "player":
-                    if "x" in line:
+                    if line[0] == "x":
                         try:
-                            player.x = int(line[2])
+                            player.x = int(line[1])
                             Found.append("Player X")
                         except:
                             notFound.append("Player X")
                             pass
-                    elif "y" in line:
+                    elif line[0] == "y":
                         try:
-                            player.y = int(line[2])
+                            player.y = int(line[1])
                             Found.append("Player Y")
                         except:
                             notFound.append("Player Y")
                             pass
-                    elif "facing" in line:
+                    elif line[0] == "facing":
                         try:
-                            player.facing = int(line[len("facing")+1:])
+                            player.facing = int(line[1])
                             Found.append("Player Facing")
                         except:
                             notFound.append("Player Facing")
                             pass
-                    elif "end" in line:
+                    elif line[0] == "end":
                         mode = "seek"
                 # Looking for enemy 
                 elif mode == "enemy":
-                    if "x" in line:
+                    if line[0] == "x":
                         try:
-                            enemy_x = int(line[2])
+                            enemy_x = int(line[1])
                         except:
                             pass
-                    elif "y" in line:
+                    elif line[0] == "y":
                         try:
-                            enemy_y = int(line[2])
+                            enemy_y = int(line[1])
                         except:
                             pass
-                    elif "facing" in line:
+                    elif line[0] == "facing":
                         try:
-                            enemy_facing = int(line[len("facing")+1])
+                            enemy_facing = int(line[1])
                         except:
                             pass
-                    elif "health" in line:
+                    elif line[0] == "health":
                         try:
-                            enemy_health = int(line[len("health")+1])
+                            enemy_health = int(line[1])
                         except:
                             pass
-                    elif "end" in line or "step" in line:
+                    elif line[0] == "end" or line[0] == "step":
                         try:
                             enemy.spawn(enemy_x,enemy_y,enemy_facing,enemy_health)
+                            print("Enemy spawned successfully")
                         except:
                             print("Failed to spawn enemy")
                             time.sleep(0.5)
-                        if "end" in line:
+                        if line[0] == "end":
                             mode = "seek"
 
     except:
@@ -106,6 +111,9 @@ def load_level(fi):
         player.x = 1
         player.y = 1
         player.facing = 2
+    print("Level Loaded!")
+    time.sleep(0.5)
+    os.system('clear')
                 
 # paint_level() is obsolete, only use for painting the level layout!
 def paint_level():

@@ -9,23 +9,23 @@ def main(dev=0):
     #enemy.spawn(1,3,0,5) # debug enemy
     #enemy.spawn(5,3,0,5) # debug enemy
     while(1):
+        print(f'Player Health: {player.health}')
         key = keyboard.getch()
         os.system('clear')
-        print(f'Player Health: {player.health}')
         if key == 'w':
-            print('Debug: W')
+            # print('Debug: W')
             player.move("forward")
         if key == 's':
-            print('Debug: S')
+            # print('Debug: S')
             player.move("backward")
         if key == "a":
-            print('Debug: A')
+            # print('Debug: A')
             player.turn("left")
         if key == "d":
-            print('Debug: D')
+            # print('Debug: D')
             player.turn("right")
         if key == "f":
-            print('Debug: F')
+            # print('Debug: F')
             player.attack()
         if key == "r":
             enemy.enemyAction()
