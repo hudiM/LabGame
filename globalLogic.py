@@ -1,5 +1,7 @@
 import level, os, common, player, time, sys, keyboard, echo, copy, color, enemy
 
+stop = 0
+
 def main(dev=0):
     dev = 0
     level.load_level(sys.path[0]+'/maps/level1')
@@ -27,7 +29,7 @@ def main(dev=0):
             player.attack()
         if key == "r":
             enemy.enemyAction()
-        if key == '0':
+        if player.isExit() or key == '0' or stop == 1:
             break
         if dev == 0:    # def mode 0
             level.paint_vision()
@@ -41,4 +43,10 @@ def main(dev=0):
             for i in devMap:
                 print(''.join(i))
             print(f'Facing: {player.facing}')
+    
+    os.system('clear')
+    if stop == 1:
+        print('Git Gud!')
+    if stop == 2:
+        print('Congratulations you got out! Somehow.')
     return 1
