@@ -30,9 +30,6 @@ def load_level(fi):
             world.append(row)
             lineNum += 1
 
-<<<<<<< HEAD
-    with open(fi + ".inf") as f:
-=======
     # Reading entity info file
     try:
         with open(fi + ".inf") as f:
@@ -105,7 +102,6 @@ def load_level(fi):
                             mode = "seek"
 
     except:
->>>>>>> 04206942de3344129b488b4ce2a02b2b68a58d95
         # Temporary testing measures
         player.x = 1
         player.y = 1
@@ -115,17 +111,6 @@ def load_level(fi):
 def paint_level():
     os.system("clear")
     paint = ""
-<<<<<<< HEAD
-    for i in range(0, len(world)):
-        for j in range(0,len(world[i])):
-            tile = world[i][j]
-            if tile in ["X"," ","T","F"]:
-                paint += "░"
-            elif tile in ["#"]:
-                paint += "▓"
-            elif tile in "P":
-                paint += direction_index[player.facing]
-=======
     tempWorld = deepcopy(world)
     tempWorld[player.y][player.x] = "P"
     monsterID = 0
@@ -136,7 +121,6 @@ def paint_level():
         for j in range(0,len(tempWorld[i])):
             tile = tempWorld[i][j]
             paint += paint_tile( tile )
->>>>>>> 04206942de3344129b488b4ce2a02b2b68a58d95
 
             if j < len(world[i])-1:
                 try:
