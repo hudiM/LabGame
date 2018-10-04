@@ -10,7 +10,7 @@ from copy import deepcopy
 direction_index = ["▲", "►", "▼", "◄"]
 world = []
 facingConstant = 0.0
-baseColor = "\033[38;2;137;96;60m"
+baseColor = "\033[38;2;130;150;132m"
 monsterColor = "\033[38;2;200;0;0m"
 
 def load_level(fi):
