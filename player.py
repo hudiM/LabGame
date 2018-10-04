@@ -1,5 +1,4 @@
-import common, level, time, keyboard, enemy
-
+import common, level, time, keyboard, enemy, globalLogic
 x, y, facing, health = 0, 0, 0, 10
 hearZone = [[]]#[distance, x, y]
 
@@ -8,6 +7,13 @@ def isPassable(a, b):
         return 0
     return 1
 
+def isExit():
+    global x,y
+    if level.world[y][x] == 'E':
+        globalLogic.stop = 2
+        return 1
+    return 0
+
 def isMonster(newX, newY):
     for monster in enemy.enemies:
         if newX == monster.x and newY == monster.y:
@@ -15,7 +21,7 @@ def isMonster(newX, newY):
     return 0
 
 def isTrigger(a, b):
-    if level.world[b][a] == ('T' or 'X' or 'F'):
+    if level.world[b][a] in ['T', 'X', 'F']:
         return 1
     return 0
 
@@ -59,9 +65,11 @@ def damageMonster(newX, newY):
     for monster in enemy.enemies:
         if newX == monster.x and newY == monster.y:
             monster.health -= 1
-            print(f'Enemy\'s health: {monster.health}')
             if monster.health == 0:
+                print('Monster defeated!')
                 enemy.enemies.remove(monster)
+            else:
+                print(f'Enemy\'s health: {monster.health}')
             break
     return
 

@@ -63,7 +63,7 @@ def load_level(fi):
                             pass
                     elif "facing" in line:
                         try:
-                            player.facing = int(line[len("facing")+1])
+                            player.facing = int(line[len("facing")+1:])
                             Found.append("Player Facing")
                         except:
                             notFound.append("Player Facing")

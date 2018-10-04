@@ -1,4 +1,4 @@
-import common, level, random, player
+import common, level, random, player, globalLogic
 
 enemies = []
 
@@ -30,6 +30,8 @@ class Monster:
 
     def attackPlayer(self):
         player.health -= 1
+        if player.health <=0:
+            globalLogic.stop = 1
 
     def isMonster(self, newX, newY):
         for enemyEntity in enemies:
@@ -38,7 +40,7 @@ class Monster:
         return 0
 
     def isPassable(self, a, b):
-        if level.world[b][a] == ('#' or 'E'):
+        if level.world[b][a] in ['#', 'E']:
             return 0
         return 1
 
