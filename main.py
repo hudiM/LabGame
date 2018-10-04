@@ -10,7 +10,7 @@ def main():
         key = keyboard.getch()
         if key in ["n","1"]:
             os.system('clear')
-            error = globalLogic.main(1)
+            error = globalLogic.main()
             return error
         elif key in ["l","2"]:
             pass

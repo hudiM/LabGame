@@ -109,7 +109,6 @@ def load_level(fi):
                 
 # paint_level() is obsolete, only use for painting the level layout!
 def paint_level():
-    os.system("clear")
     paint = ""
     tempWorld = deepcopy(world)
     tempWorld[player.y][player.x] = "P"
