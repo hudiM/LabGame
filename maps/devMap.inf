@@ -1,7 +1,10 @@
-player 1 1
-triggers
-{
-}
-enemies
-{
-}
+player
+x 2
+y 2
+facing 2
+end
+enemy
+x 5
+y 5
+facing 0
+health 10

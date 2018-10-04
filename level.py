@@ -29,8 +29,79 @@ def load_level(fi):
             world.append(row)
             lineNum += 1
 
-    with open(fi + ".inf") as f:
+    # Reading entity info file
+    try:
+        with open(fi + ".inf") as f:
+
+            mode = "seek" # Start by seeking for other parts
+            notFound = []
+            Found = []
+            for line in f:
+                if mode == "seek":
+                    if "player" in line:
+                        mode = "player"
+                    elif "trigger" in line:
+                        mode = "trigger"
+                    elif "enemy" in line:
+                        mode = "enemy"
+                # Looking for player properties
+                elif mode == "player":
+                    if "x" in line:
+                        try:
+                            player.x = int(line[2])
+                            Found.append("Player X")
+                        except:
+                            notFound.append("Player X")
+                            pass
+                    elif "y" in line:
+                        try:
+                            player.y = int(line[2])
+                            Found.append("Player Y")
+                        except:
+                            notFound.append("Player Y")
+                            pass
+                    elif "facing" in line:
+                        try:
+                            player.facing = int(line[len("facing")+1])
+                            Found.append("Player Facing")
+                        except:
+                            notFound.append("Player Facing")
+                            pass
+                    elif "end" in line:
+                        mode = "seek"
+                # Looking for enemy 
+                elif mode == "enemy":
+                    if "x" in line:
+                        try:
+                            enemy_x = int(line[2])
+                        except:
+                            pass
+                    elif "y" in line:
+                        try:
+                            enemy_y = int(line[2])
+                        except:
+                            pass
+                    elif "facing" in line:
+                        try:
+                            enemy_facing = int(line[len("facing")+1])
+                        except:
+                            pass
+                    elif "health" in line:
+                        try:
+                            enemy_health = int(line[len("health")+1])
+                        except:
+                            pass
+                    elif "end" in line or "step" in line:
+                        try:
+                            enemy.spawn(enemy_x,enemy_y,enemy_facing,enemy_health)
+                        except:
+                            print("Failed to spawn enemy")
+                        if "end" in line:
+                            mode = "seek"
+
+    except:
         # Temporary testing measures
+        print("ERROR: Could not load entities. Setting defaults.")
         player.x = 1
         player.y = 1
         player.facing = 2
@@ -39,9 +110,15 @@ def load_level(fi):
 def paint_level():
     os.system("clear")
     paint = ""
-    for i in range(0, len(world)):
-        for j in range(0,len(world[i])):
-            tile = world[i][j]
+    tempWorld = deepcopy(world)
+    tempWorld[player.y][player.x] = "P"
+    monsterID = 0
+    for monster in enemy.enemies:
+        tempWorld[monster.y][monster.x] = "M" + str(monsterID)
+        monsterID += 1
+    for i in range(0, len(tempWorld)):
+        for j in range(0,len(tempWorld[i])):
+            tile = tempWorld[i][j]
             if tile in ["X"," ","T","F"]:
                 paint += "░"
             elif tile in ["#"]:
@@ -49,9 +126,9 @@ def paint_level():
             elif tile in "P":
                 paint += direction_index[player.facing]
 
-            if j < len(world[i])-1:
+            if j < len(tempWorld[i])-1:
                 try:
-                    if tile in ["#"] and world[i][j+1] in ["#"]:
+                    if tile in ["#"] and tempWorld[i][j+1] in ["#"]:
                         paint += "▓"
                     else:
                         paint += "░"
