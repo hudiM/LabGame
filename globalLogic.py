@@ -1,11 +1,11 @@
 import level, os, common, player, time, sys, keyboard, echo, copy, color, enemy
 
 def main(dev=0):
-    dev = 1
-    level.load_level(sys.path[0]+'/maps/devMap')
+    dev = 0
+    level.load_level(sys.path[0]+'/maps/level1')
     level.paint_vision()
-    enemy.spawn(1,3,0,5) # debug enemy
-    enemy.spawn(5,3,0,5) # debug enemy
+    #enemy.spawn(1,3,0,5) # debug enemy
+    #enemy.spawn(5,3,0,5) # debug enemy
     while(1):
         key = keyboard.getch()
         os.system('clear')

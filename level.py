@@ -159,8 +159,8 @@ def paint_vision():
     for monster in enemy.enemies:
         tempWorld[monster.y][monster.x] = "M" + str(monsterID)
         monsterID += 1
-    vision = in_vision([player.y,player.x,player.facing],3)
-    hearing = echo.read_zone([player.y,player.x], 5)
+    vision = in_vision([player.y,player.x,player.facing],5)
+    hearing = echo.read_zone([player.y,player.x], 8)
     # walls = [] # For debugging purposes
     
     for i in range(0, len(tempWorld)):
