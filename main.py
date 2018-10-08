@@ -1,4 +1,7 @@
-import os, globalLogic, keyboard
+import os
+import globalLogic
+import keyboard
+
 
 def main():
     print('''
@@ -8,13 +11,13 @@ def main():
 ''')
     while 1:
         key = keyboard.getch()
-        if key in ["n","1"]:
+        if key in ["n", "1"]:
             os.system('clear')
             error = globalLogic.main()
             return error
-        elif key in ["l","2"]:
+        elif key in ["l", "2"]:
             pass
-        elif key in ["e","3"]:
+        elif key in ["e", "3"]:
             print("Ending game")
             break
 

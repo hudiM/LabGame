@@ -1,9 +1,15 @@
-import common, level, random, player, globalLogic
+import common
+import level
+import random
+import player
+import globalLogic
 
 enemies = []
 
+
 class Monster:
     import player
+
     def __init__(self, x, y, facing, health):
         self.y = y
         self.x = x
@@ -30,7 +36,7 @@ class Monster:
 
     def attackPlayer(self):
         player.health -= 1
-        if player.health <=0:
+        if player.health <= 0:
             globalLogic.stop = 1
 
     def isMonster(self, newX, newY):
@@ -45,35 +51,35 @@ class Monster:
         return 1
 
     def move(self):
-        randomMove = random.randrange(0,6)
+        randomMove = random.randrange(0, 6)
         if randomMove < 5:
             if self.facing == 2:
-                if self.isPassable(self.x,self.y+1):
-                    if self.isMonster(self.x,self.y+1) == 0:
+                if self.isPassable(self.x, self.y+1):
+                    if self.isMonster(self.x, self.y+1) == 0:
                         self.y += 1
                     else:
                         self.facing -= 1
                 else:
                     self.facing -= 1
             elif self.facing == 0:
-                if self.isPassable(self.x,self.y-1):
-                    if self.isMonster(self.x,self.y-1) == 0:
+                if self.isPassable(self.x, self.y-1):
+                    if self.isMonster(self.x, self.y-1) == 0:
                         self.y -= 1
                     else:
                         self.facing -= 1
                 else:
                     self.facing -= 1
             elif self.facing == 1:
-                if self.isPassable(self.x+1,self.y):
-                    if self.isMonster(self.x+1,self.y) == 0:
+                if self.isPassable(self.x+1, self.y):
+                    if self.isMonster(self.x+1, self.y) == 0:
                         self.x += 1
                     else:
                         self.facing -= 1
                 else:
                     self.facing -= 1
             elif self.facing == 3:
-                if self.isPassable(self.x-1,self.y):
-                    if self.isMonster(self.x-1,self.y) == 0:
+                if self.isPassable(self.x-1, self.y):
+                    if self.isMonster(self.x-1, self.y) == 0:
                         self.x -= 1
                     else:
                         self.facing -= 1
@@ -111,9 +117,11 @@ class Monster:
             else:
                 self.facing = 3
 
+
 def enemyAction():
     for monster in enemies:
         monster.lookForPlayer()
+
 
 def spawn(x, y, facing, health):
     monster_id = Monster(x, y, facing, health)

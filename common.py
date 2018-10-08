@@ -1,8 +1,10 @@
 import color
 
+
 def printErr(error):
     print(color.white+'['+color.red+'Error'+color.white+'] '+error+'.')
     return
+
 
 def keyInput():
     pressedKey = input('Key: ')
