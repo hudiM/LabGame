@@ -2,7 +2,7 @@ import color
 
 
 def printErr(error):
-    print(color.white+'['+color.red+'Error'+color.white+'] '+error+'.')
+    print(color.reset+'['+color.red+'Error'+color.reset+'] '+error+'.'+color.reset)
     return
 
 
