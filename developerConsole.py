@@ -12,7 +12,7 @@ def openConsole():
     os.system('clear')
     print(f'Player Health: {player.health}')
     display()
-    cmd = input(color.orange+'input'+color.baseColor+': ').split('.')
+    cmd = input(color.orange+'input'+color.baseColor+': ').split(' ')
     if cmd[0] == 'player':
         if cmd[1] in ['hp', 'health']:
             player.health = int(cmd[2])

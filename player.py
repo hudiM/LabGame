@@ -1,4 +1,5 @@
-import common
+from common import printDebug
+from common import printErr
 import level
 import time
 import keyboard
@@ -7,10 +8,27 @@ import globalLogic
 
 x, y, facing, health = 0, 0, 0, 10
 hearZone = [[]]  # [distance, x, y]
+dfw = {0: [x, y-1], 2: [x, y+1], 1: [x+1, y], 3: [x-1, y]}
+dbw = {0: [x, y+1], 2: [x, y-1], 1: [x-1, y], 3: [x+1, y]}
 
 
-def isPassable(a, b):
-    if level.world[b][a] == '#':
+def updateCoords(direction):
+    global x, y
+    if direction == "dfw":
+        dfw[0] = [x, y-1]
+        dfw[1] = [x+1, y]
+        dfw[2] = [x, y+1]
+        dfw[3] = [x-1, y]
+    if direction == "dbw":
+        dbw[0] = [x, y+1]
+        dbw[1] = [x-1, y]
+        dbw[2] = [x, y-1]
+        dbw[3] = [x+1, y]
+    return
+
+
+def isPassable(coords):
+    if level.world[coords[1]][coords[0]] == '#':
         return 0
     return 1
 
@@ -23,14 +41,14 @@ def isExit():
     return 0
 
 
-def isMonster(newX, newY):
+def isMonster(coords):
     for monster in enemy.enemies:
-        if newX == monster.x and newY == monster.y:
+        if coords[0] == monster.x and coords[1] == monster.y:
             return 1
     return 0
 
 
-def isTrigger(a, b):
+def isTrigger(a, b):  # unused at the moment
     if level.world[b][a] in ['T', 'X', 'F']:
         return 1
     return 0
@@ -59,24 +77,16 @@ def turn(direction):
 
 
 def attack():
-    if facing == 0:
-        if isMonster(x, y-1):
-            damageMonster(x, y-1)
-    elif facing == 1:
-        if isMonster(x+1, y):
-            damageMonster(x+1, y)
-    elif facing == 2:
-        if isMonster(x, y+1):
-            damageMonster(x, y+1)
-    elif facing == 3:
-        if isMonster(x-1, y):
-            damageMonster(x-1, y)
+    updateCoords("dfw")
+    if isMonster(dfw[facing]):
+        damageMonster(dfw[facing])
+    return
 
 
-def damageMonster(newX, newY):
+def damageMonster(coords):
     enemy.enemyAction()
     for monster in enemy.enemies:
-        if newX == monster.x and newY == monster.y:
+        if coords[0] == monster.x and coords[1] == monster.y:
             monster.health -= 1
             if monster.health == 0:
                 print('Monster defeated!')
@@ -87,52 +97,36 @@ def damageMonster(newX, newY):
     return
 
 
-def move(direction):  # enemies take action if you actually move ( no action input is unhandled )
+def move(direction):  # enemies take action if you actually move
     global x, y
     if direction == "forward":
-        if facing == 0:
-            if not isMonster(x, y-1):
-                if isPassable(x, y-1):
+        updateCoords("dfw")
+        if not isMonster(dfw[facing]):
+            if isPassable(dfw[facing]):
+                if facing == 0:
                     y -= 1
-                    enemy.enemyAction()
-        elif facing == 1:
-            if not isMonster(x+1, y):
-                if isPassable(x+1, y):
-                    x += 1
-                    enemy.enemyAction()
-        elif facing == 2:
-            if not isMonster(x, y+1):
-                if isPassable(x, y+1):
+                if facing == 2:
                     y += 1
-                    enemy.enemyAction()
-        elif facing == 3:
-            if not isMonster(x-1, y):
-                if isPassable(x-1, y):
+                if facing == 1:
+                    x += 1
+                if facing == 3:
                     x -= 1
-                    enemy.enemyAction()
+                enemy.enemyAction()
         else:
-            common.printErr('Wrong facing')
+            printErr('Something went wrong')
     if direction == "backward":
-        if facing == 0:
-            if not isMonster(x, y+1):
-                if isPassable(x, y+1):
+        updateCoords("dbw")
+        if not isMonster(dbw[facing]):
+            if isPassable(dbw[facing]):
+                if facing == 0:
                     y += 1
-                    enemy.enemyAction()
-        elif facing == 1:
-            if not isMonster(x-1, y):
-                if isPassable(x-1, y):
-                    x -= 1
-                    enemy.enemyAction()
-        elif facing == 2:
-            if not isMonster(x, y-1):
-                if isPassable(x, y-1):
+                if facing == 2:
                     y -= 1
-                    enemy.enemyAction()
-        elif facing == 3:
-            if not isMonster(x+1, y):
-                if isPassable(x+1, y):
+                if facing == 1:
+                    x -= 1
+                if facing == 3:
                     x += 1
-                    enemy.enemyAction()
+                enemy.enemyAction()
         else:
-            common.printErr('Wrong facing')
+            printErr('Something went wrong')
     return

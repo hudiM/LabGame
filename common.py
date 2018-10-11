@@ -2,7 +2,12 @@ import color
 
 
 def printErr(error):
-    print(color.reset+'['+color.red+'Error'+color.reset+'] '+error+'.'+color.reset)
+    print(color.reset+'['+color.red+'Error'+color.reset+'] '+str(error)+'.'+color.reset)
+    return
+
+
+def printDebug(debugmsg):
+    print(color.reset+'['+color.aqua+'Debug'+color.reset+'] '+str(debugmsg)+'.'+color.reset)
     return
 
 
