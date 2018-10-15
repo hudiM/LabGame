@@ -6,6 +6,11 @@ def printErr(error):
     return
 
 
+def printWarning(error):
+    print(color.reset+'['+color.orange+'Warning'+color.reset+'] '+str(error)+'.'+color.reset)
+    return
+
+
 def printDebug(debugmsg):
     print(color.reset+'['+color.aqua+'Debug'+color.reset+'] '+str(debugmsg)+'.'+color.reset)
     return

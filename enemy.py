@@ -1,4 +1,6 @@
-import common
+from common import printErr
+from common import printDebug
+from common import printWarning
 import level
 import random
 import player
@@ -22,29 +24,32 @@ class Monster:
         self.d[1] = [self.x+1, self.y]
         self.d[2] = [self.x, self.y+1]
         self.d[3] = [self.x-1, self.y]
-        return
 
-    def isPlayer(self):
-        if self.facing == 0:
-            if player.x == self.x and player.y == self.y+1:
-                return 1
+    def isPlayerInHearingDistance(self):  # it works but why?!
+        # https://stackoverflow.com/questions/11963711/what-is-the-most-efficient-way-to-search-nested-lists-in-python
+        # https://python-textbok.readthedocs.io/en/1.0/Loop_Control_Statements.html#comprehensions
+        # if (self.y, self.x) in [sublist for sublist in player.players[0]:
+        # if (self.x, self.y) in player.players[0].hearZone:
+        #     printDebug('Yes')
+        #     return 1
         return 0
 
     def isPlayerAround(self):
-        if player.x == self.x and player.y == self.y-1:
+        self.isPlayerInHearingDistance()
+        if player.players[0].x == self.x and player.players[0].y == self.y-1:
             return 0
-        elif player.x == self.x and player.y == self.y+1:
+        elif player.players[0].x == self.x and player.players[0].y == self.y+1:
             return 2
-        elif player.x == self.x+1 and player.y == self.y:
+        elif player.players[0].x == self.x+1 and player.players[0].y == self.y:
             return 1
-        elif player.x == self.x-1 and player.y == self.y:
+        elif player.players[0].x == self.x-1 and player.players[0].y == self.y:
             return 3
         else:
             return -1
 
     def attackPlayer(self):
-        player.health -= 1
-        if player.health <= 0:
+        player.players[0].health -= 1
+        if player.players[0].health <= 0:
             globalLogic.stop = 1
 
     def isMonster(self, coords):
@@ -58,9 +63,19 @@ class Monster:
             return 0
         return 1
 
+    def autoFacing(self):
+        if self.isPassable(self.d[(self.facing-1) % 4]):
+            self.facing -= 1
+        else:
+            if self.isPassable(self.d[(self.facing+1) % 4]):
+                self.facing += 1
+            else:
+                self.facing += 2
+        return
+
     def move(self):
-        randomMove = random.randrange(0, 6)
-        if randomMove < 5:
+        randomMove = random.randrange(0, 5)
+        if randomMove < 4:
             self.updateCoords()
             if self.isPassable(self.d[self.facing]):
                 if self.isMonster(self.d[self.facing]) == 0:
@@ -73,13 +88,13 @@ class Monster:
                     elif self.facing == 3:
                         self.x -= 1
                 else:
-                    self.facing -= 1
+                    self.autoFacing()
             else:
-                self.facing -= 1
-        elif randomMove == 6:
-            self.facing += 1
+                self.autoFacing()
+        elif randomMove == 4:
+            self.autoFacing()
         elif randomMove == 5:
-            self.facing -= 1
+            pass
         else:
             common.printErr(f'monster movement error {randomMove} is out of range (0-6)')
         self.facing %= 4
@@ -112,6 +127,7 @@ class Monster:
 def enemyAction():
     for monster in enemies:
         monster.lookForPlayer()
+        pass
 
 
 def spawn(x, y, facing, health):

@@ -59,21 +59,21 @@ def load_level(fi):
                         try:
                             player.x = int(line[1])
                             Found.append("Player X")
-                        except:
+                        except BaseException:
                             notFound.append("Player X")
                             pass
                     elif line[0] == "y":
                         try:
                             player.y = int(line[1])
                             Found.append("Player Y")
-                        except:
+                        except BaseException:
                             notFound.append("Player Y")
                             pass
                     elif line[0] == "facing":
                         try:
                             player.facing = int(line[1])
                             Found.append("Player Facing")
-                        except:
+                        except BaseException:
                             notFound.append("Player Facing")
                             pass
                     elif line[0] == "end":
@@ -83,34 +83,34 @@ def load_level(fi):
                     if line[0] == "x":
                         try:
                             enemy_x = int(line[1])
-                        except:
+                        except BaseException:
                             pass
                     elif line[0] == "y":
                         try:
                             enemy_y = int(line[1])
-                        except:
+                        except BaseException:
                             pass
                     elif line[0] == "facing":
                         try:
                             enemy_facing = int(line[1])
-                        except:
+                        except BaseException:
                             pass
                     elif line[0] == "health":
                         try:
                             enemy_health = int(line[1])
-                        except:
+                        except BaseException:
                             pass
                     elif line[0] == "end" or line[0] == "step":
                         try:
                             enemy.spawn(enemy_x, enemy_y, enemy_facing, enemy_health)
                             print("Enemy spawned successfully")
-                        except:
+                        except BaseException:
                             print("Failed to spawn enemy")
                             time.sleep(0.5)
                         if line[0] == "end":
                             mode = "seek"
 
-    except:
+    except BaseException:
         # Temporary testing measures
         player.x = 1
         player.y = 1
@@ -124,11 +124,17 @@ def load_level(fi):
 def paint_level():
     paint = ""
     tempWorld = deepcopy(world)
-    tempWorld[player.y][player.x] = "P"
-    monsterID = 0
+
+    monster_ID = 0
     for monster in enemy.enemies:
-        tempWorld[monster.y][monster.x] = "M" + str(monsterID)
-        monsterID += 1
+        tempWorld[monster.y][monster.x] = "M" + str(monster_ID)
+        monster_ID += 1
+
+    player_ID = 0
+    for current_player in player.players:
+        tempWorld[current_player.y][current_player.x] = "P" + str(player_ID)
+        player_ID += 1
+
     for i in range(0, len(tempWorld)):
         for j in range(0, len(tempWorld[i])):
             tile = tempWorld[i][j]
@@ -140,7 +146,7 @@ def paint_level():
                         paint += "▓"
                     else:
                         paint += "░"
-                except:
+                except BaseException:
                     pass
 
         paint += "\n"
@@ -155,8 +161,9 @@ def paint_tile(tile):
         paint += "▓"
     elif tile in ["E"]:
         paint += exitColor + "░" + baseColor
-    elif tile in "P":
-        paint += direction_index[player.facing]
+    elif tile[0] in "P":
+        player_ID = int(tile[1:])
+        paint += direction_index[player.players[player_ID].facing]
     elif tile[0] == "M":
         monsterID = int(tile[1:])
         paint += monsterColor + direction_index[enemy.enemies[monsterID].facing] + baseColor
@@ -168,13 +175,19 @@ def paint_vision():
     paint = baseColor
     # creating a deep copy of the world for displayign purposes
     tempWorld = deepcopy(world)
-    tempWorld[player.y][player.x] = "P"
+
     monsterID = 0
     for monster in enemy.enemies:
         tempWorld[monster.y][monster.x] = "M" + str(monsterID)
         monsterID += 1
-    vision = in_vision([player.y, player.x, player.facing], 5)
-    hearing = echo.read_zone([player.y, player.x], 8)
+
+    player_ID = 0
+    for current_player in player.players:
+        tempWorld[current_player.y][current_player.x] = "P" + str(player_ID)
+        player_ID += 1
+        vision = in_vision([current_player.y, current_player.x, current_player.facing], 5)
+        hearing = echo.read_zone([current_player.y, current_player.x], 8).keys()
+
     # walls = [] # For debugging purposes
 
     for i in range(0, len(tempWorld)):
@@ -192,10 +205,10 @@ def paint_vision():
                             paint += exitColor + "░" + baseColor
                         else:
                             paint += "░"
-                    except:
+                    except BaseException:
                         pass
             else:
-                if [i, j] in hearing[1]:
+                if (i, j) in hearing:
                     tile = tempWorld[i][j]
                     if tile[0] == "M":
                         paint += monsterColor + "■" + baseColor

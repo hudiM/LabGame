@@ -10,17 +10,17 @@ import common
 
 def openConsole():
     os.system('clear')
-    print(f'Player Health: {player.health}')
+    print(f'Player Health: {player.players[0].health}')
     display()
     cmd = input(color.orange+'input'+color.baseColor+': ').split(' ')
     if cmd[0] == 'player':
         if cmd[1] in ['hp', 'health']:
-            player.health = int(cmd[2])
+            player.players[0].health = int(cmd[2])
         if cmd[1] in ['tp', 'teleport']:
-            player.x = int(cmd[2])
-            player.y = int(cmd[3])
+            player.players[0].x = int(cmd[2])
+            player.players[0].y = int(cmd[3])
         if cmd[1] == 'face':
-            player.facing = int(cmd[2])
+            player.players[0].facing = int(cmd[2])
     if cmd[0] in ['devmode', 'devmap']:
         if cmd[1] == '0':
             globalLogic.dev = 0
@@ -34,7 +34,7 @@ def openConsole():
     os.system('clear')
     if cmd[0] == 'printerr':
         common.printErr(''.join(cmd[1:]))
-    print(f'Player Health: {player.health}')
+    print(f'Player Health: {player.players[0].health}')
     return
 
 
@@ -50,4 +50,4 @@ def display():
             devMap[monster.y][monster.x] = (color.red+'E'+color.reset)
         for i in devMap:
             print(''.join(i))
-        print(f'Facing: {player.facing}')
+        print(f'Facing: {player.players[0].facing}')
