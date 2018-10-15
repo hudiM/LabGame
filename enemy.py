@@ -1,17 +1,15 @@
 from common import printErr
 from common import printDebug
 from common import printWarning
-import level
-import random
-import player
 import globalLogic
+import player
+import random
+import level
 
 enemies = []
 
 
 class Monster:
-    import player
-
     def __init__(self, x, y, facing, health):
         self.y = y
         self.x = x
@@ -25,13 +23,9 @@ class Monster:
         self.d[2] = [self.x, self.y+1]
         self.d[3] = [self.x-1, self.y]
 
-    def isPlayerInHearingDistance(self):  # it works but why?!
-        # https://stackoverflow.com/questions/11963711/what-is-the-most-efficient-way-to-search-nested-lists-in-python
-        # https://python-textbok.readthedocs.io/en/1.0/Loop_Control_Statements.html#comprehensions
-        # if (self.y, self.x) in [sublist for sublist in player.players[0]:
-        # if (self.x, self.y) in player.players[0].hearZone:
-        #     printDebug('Yes')
-        #     return 1
+    def isPlayerInHearingDistance(self):
+        if (self.x, self.y) in player.players[0].hearZone.keys():
+            return 1
         return 0
 
     def isPlayerAround(self):

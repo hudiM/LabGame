@@ -12,7 +12,7 @@ import enemy
 import developerConsole
 
 stop = 0
-dev = 1
+dev = 0
 
 
 def main():
@@ -34,7 +34,6 @@ def main():
             devMap = copy.deepcopy(level.world)
             for item in list(player.players[0].hearZone.items()):
                 devMap[item[0][1]][item[0][0]] = color.lightblue+str(item[1])+color.reset
-                # devMap[i[1][1]][i[1][0]] = (color.blue+str(i[0])+color.reset)
             devMap[player.players[0].y][player.players[0].x] = (color.green+'P'+color.reset)
             for monster in enemy.enemies:
                 devMap[monster.y][monster.x] = (color.red+'E'+color.reset)

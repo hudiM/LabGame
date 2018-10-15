@@ -16,7 +16,7 @@ class Player:
         self.y = y
         self.facing = facing
         self.health = health
-        self.hearZone = ''
+        self.hearZone = {0: [0, 0]}
         self.dfw = {0: [x, y-1], 2: [x, y+1], 1: [x+1, y], 3: [x-1, y]}
         self.dbw = {0: [x, y+1], 2: [x, y-1], 1: [x-1, y], 3: [x+1, y]}
 
