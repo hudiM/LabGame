@@ -18,7 +18,7 @@ dev = 0
 def main():
     global stop, dev
     level.load_level(sys.path[0]+'/maps/level1')
-    player.spawn(2, 2, 0, 50)
+    player.spawn(20, 5, 0, 50)
     print(f'Player Health: {player.players[0].health}')
     # level.paint_vision()
     while(1):

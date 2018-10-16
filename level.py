@@ -186,7 +186,7 @@ def paint_vision():
         tempWorld[current_player.y][current_player.x] = "P" + str(player_ID)
         player_ID += 1
         vision = in_vision([current_player.y, current_player.x, current_player.facing], 5)
-        hearing = echo.read_zone([current_player.y, current_player.x], 8).keys()
+        hearing = echo.read_zone([current_player.x, current_player.y], 8).keys()
 
     # walls = [] # For debugging purposes
 
