@@ -18,9 +18,6 @@ dev = 2
 
 def main():
     global stop, dev
-    level.load_level(sys.path[0]+'/maps/level1')
-    player.spawn(2, 2, 0, 50)
-    player.spawn(36, 5, 0, 50)
     keys = {'w': (player.players[0].move, "forward"),
             's': (player.players[0].move, "backward"),
             'a': (player.players[0].turn, "left"),
@@ -54,7 +51,7 @@ def main():
         # keys[0][keyboard.getch()]()
         try:
             keys[key][0](*keys[key][1:])
-        except:
+        except BaseException:
             pass
         if stop > 0:
             break

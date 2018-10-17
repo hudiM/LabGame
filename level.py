@@ -8,76 +8,152 @@ import os
 import math
 import time
 import echo
+import sys
+import keyboard
 from copy import deepcopy
 
-direction_index = ["▲", "►", "▼", "◄"]
+DIRECTION_INDEX = ["▲", "►", "▼", "◄"]
 world = []
-facingConstant = 0.0
-baseColor = "\033[38;2;130;150;132m"
-monsterColor = "\033[38;2;200;0;0m"
-exitColor = "\033[38;2;244;167;66m"
+level_name = ""
+FACING_CONSTANT = 0.0
+BASE_COLOR = "\033[38;2;130;150;132m"
+MONSTER_COLOR = "\033[38;2;200;0;0m"
+EXIT_COLOR = "\033[38;2;244;167;66m"
+
+
+def get_save_files():
+    return [save_name for save_name in os.listdir(sys.path[0] + "/maps") if save_name[-4:] == ".sav"]
+
+
+def load_game_menu():
+    os.system('clear')
+    in_load_menu = True
+    saves = get_save_files()
+    list_stage = 0
+    print_load_menu(saves, list_stage)
+    while in_load_menu:
+        key = keyboard.getch()
+        if key == "A":
+            if list_stage > 0:
+                list_stage -= 1
+                print_load_menu(saves, list_stage)
+        elif key == "B":
+            if list_stage < int(len(saves)/9):
+                list_stage += 1
+                print_load_menu(saves, list_stage)
+        elif key in [str(i) for i in range(10)]:
+            if int(key) == 0:
+                in_load_menu = False
+            if int(key) > 0:
+                if int(key) <= len(saves) - list_stage * 9:
+                    load_level(sys.path[0]+'/maps/'+saves[int(key)-1 + 9*list_stage])
+                    in_load_menu = False
+
+
+def print_load_menu(saves, list_stage):
+    for list_number in range(9):
+        if 9*list_stage + list_number < len(saves):
+            print(str(list_number + 1), saves[9*list_stage + list_number][:-4])
+        else:
+            break
+    print("0 Back to main menu")
+
+
+def save_game(file_name):
+    with open('{}/maps/{}.sav'.format(sys.path[0], file_name), "w") as fi:
+        fi.write("layout\n")
+        fi.write(level_name + "\n")
+
+        fi.write("player\n")
+        for player_ID in range(len(player.players)):
+            fi.write(" ".join(("x", str(player.players[player_ID].x))) + "\n")
+            fi.write(" ".join(("y", str(player.players[player_ID].y))) + "\n")
+            fi.write(" ".join(("facing", str(player.players[player_ID].facing))) + "\n")
+            fi.write(" ".join(("health", str(player.players[player_ID].health))) + "\n")
+            if player_ID == len(player.players) - 1:
+                fi.write("end\n")
+            else:
+                fi.write("step\n")
+
+        fi.write("enemy\n")
+        for enemy_ID in range(len(enemy.enemies)):
+            fi.write(" ".join(("x", str(enemy.enemies[enemy_ID].x))) + "\n")
+            fi.write(" ".join(("y", str(enemy.enemies[enemy_ID].y))) + "\n")
+            fi.write(" ".join(("facing", str(enemy.enemies[enemy_ID].facing))) + "\n")
+            fi.write(" ".join(("health", str(enemy.enemies[enemy_ID].health))) + "\n")
+            # fi.write(" ".join(("hearing", str(enemy.enemies[enemy_ID].hearingStr))) + "\n")
+            # fi.write(" ".join(("ap", str(enemy.enemies[enemy_ID].ap))) + "\n")
+            if enemy_ID == len(enemy.enemies) - 1:
+                fi.write("end\n")
+            else:
+                fi.write("step\n")
 
 
 def load_level(fi):
     global world
     world = []
-    lineNum = 0
-    with open(fi + ".ter") as f:
-        for line in f:
-            row = []
-            for i in range(0, len(line)):
-                if line[i] != '\n':
-                    row.append(line[i])
-                    # if line[i] == 'P':
-                    #     player.x = i
-                    #     player.y = lineNum
-            world.append(row)
-            lineNum += 1
 
     # Reading entity info file
     try:
-        with open(fi + ".inf") as f:
+        with open(fi) as f:
 
             mode = "seek"  # Start by seeking for other parts
-            notFound = []
-            Found = []
+            # In case it is loaded from a standard file
+            enemy_ap = 0
+            enemy_hearing = 5
             for line in f:
                 line = line[:-1].split(" ")
                 print(line)
-                time.sleep(0.01)
+                time.sleep(0.001)
                 if mode == "seek":
-                    if line[0] == "player":
-                        mode = "player"
-                    elif line[0] == "trigger":
-                        mode = "trigger"
-                    elif line[0] == "enemy":
-                        print("In Enemy Mode")
-                        mode = "enemy"
+                    if line[0] in ["layout", "player", "trigger", "enemy"]:
+                        mode = line[0]
+
+                # Setting up level layout
+                elif mode == "layout":
+                    global level_name
+                    level_name = line[0]
+                    with open(sys.path[0] + '/maps/' + line[0]) as f:
+                        for line in f:
+                            row = []
+                            for i in range(0, len(line)):
+                                if line[i] != '\n':
+                                    row.append(line[i])
+                            world.append(row)
+                    mode = "seek"
+
                 # Looking for player properties
                 elif mode == "player":
                     if line[0] == "x":
                         try:
-                            player.x = int(line[1])
-                            Found.append("Player X")
+                            player_x = int(line[1])
                         except BaseException:
-                            notFound.append("Player X")
                             pass
                     elif line[0] == "y":
                         try:
-                            player.y = int(line[1])
-                            Found.append("Player Y")
+                            player_y = int(line[1])
                         except BaseException:
-                            notFound.append("Player Y")
                             pass
                     elif line[0] == "facing":
                         try:
-                            player.facing = int(line[1])
-                            Found.append("Player Facing")
+                            player_facing = int(line[1])
                         except BaseException:
-                            notFound.append("Player Facing")
                             pass
-                    elif line[0] == "end":
-                        mode = "seek"
+                    elif line[0] == "health":
+                        try:
+                            player_health = int(line[1])
+                        except BaseException:
+                            pass
+                    elif line[0] in ["end", "step"]:
+                        try:
+                            player.spawn(player_x, player_y, player_facing, player_health)
+                            print("Player spawned.")
+                        except BaseException:
+                            print("Failed to spawn player.")
+                            time.sleep(0.5)
+                        if line[0] == "end":
+                            mode = "seek"
+
                 # Looking for enemy
                 elif mode == "enemy":
                     if line[0] == "x":
@@ -100,9 +176,20 @@ def load_level(fi):
                             enemy_health = int(line[1])
                         except BaseException:
                             pass
-                    elif line[0] == "end" or line[0] == "step":
+                    elif line[0] == "ap":
                         try:
-                            enemy.spawn(enemy_x, enemy_y, enemy_facing, enemy_health)
+                            enemy_ap = int(line[1])
+                        except BaseException:
+                            pass
+                    elif line[0] == "hearing":
+                        try:
+                            enemy_hearing = int(line[1])
+                        except BaseException:
+                            pass
+                    elif line[0] in ["step", "end"]:
+                        try:
+                            enemy.spawn(enemy_x, enemy_y, enemy_facing, enemy_health)  # , enemy_hearing, enemy_ap)
+                            enemy_ap = 0
                             print("Enemy spawned successfully")
                         except BaseException:
                             print("Failed to spawn enemy")
@@ -111,16 +198,14 @@ def load_level(fi):
                             mode = "seek"
 
     except BaseException:
-        # Temporary testing measures
-        player.x = 1
-        player.y = 1
-        player.facing = 2
+        # If we do not have a .inf file, we load a default player.
+        player.spawn(1, 1, 2, 50)
     print("Level Loaded!")
     time.sleep(0.5)
     os.system('clear')
 
 
-# paint_level() is obsolete, only use for painting the level layout!
+# Paints the entire level.
 def paint_level():
     paint = ""
     tempWorld = deepcopy(world)
@@ -160,19 +245,18 @@ def paint_tile(tile):
     elif tile in ["#"]:
         paint += "▓"
     elif tile in ["E"]:
-        paint += exitColor + "░" + baseColor
+        paint += EXIT_COLOR + "░" + BASE_COLOR
     elif tile[0] in "P":
         player_ID = int(tile[1:])
-        paint += direction_index[player.players[player_ID].facing]
+        paint += DIRECTION_INDEX[player.players[player_ID].facing]
     elif tile[0] == "M":
         monsterID = int(tile[1:])
-        paint += monsterColor + direction_index[enemy.enemies[monsterID].facing] + baseColor
+        paint += MONSTER_COLOR + DIRECTION_INDEX[enemy.enemies[monsterID].facing] + BASE_COLOR
     return paint
 
 
 def paint_vision():
-    # os.system("clear")
-    paint = baseColor
+    paint = BASE_COLOR
     # creating a deep copy of the world for displayign purposes
     tempWorld = deepcopy(world)
 
@@ -184,13 +268,12 @@ def paint_vision():
     player_ID = 0
     vision = []
     hearing = []
+
     for current_player in player.players:
         tempWorld[current_player.y][current_player.x] = "P" + str(player_ID)
         player_ID += 1
         vision.extend(in_vision([current_player.x, current_player.y, current_player.facing], 5))
         hearing.extend(echo.read_zone([current_player.x, current_player.y], 8).keys())
-
-    # walls = [] # For debugging purposes
 
     for i in range(0, len(tempWorld)):
         for j in range(0, len(tempWorld[i])):
@@ -204,7 +287,7 @@ def paint_vision():
                         if tile in ["#"] and tempWorld[i][j+1] in ["#"]:
                             paint += "▓"
                         elif tile in ["E"] and tempWorld[i][j+1] in ["E"]:
-                            paint += exitColor + "░" + baseColor
+                            paint += EXIT_COLOR + "░" + BASE_COLOR
                         else:
                             paint += "░"
                     except BaseException:
@@ -213,7 +296,7 @@ def paint_vision():
                 if (j, i) in hearing:
                     tile = tempWorld[i][j]
                     if tile[0] == "M":
-                        paint += monsterColor + "■" + baseColor
+                        paint += MONSTER_COLOR + "■" + BASE_COLOR
                     else:
                         paint += " "
                 else:
@@ -222,7 +305,6 @@ def paint_vision():
                     paint += " "
         paint += "\n"
     print(paint)
-    # print(walls)
 
 
 def in_vision(source, viewDistance=8.5):
@@ -237,12 +319,11 @@ def in_vision(source, viewDistance=8.5):
         for j in range(source[0] - CeilViewDistance, source[0] + CeilViewDistance + 1):
             if in_world(i, j):
                 if get_distance(source, [j, i]) <= viewDistance:
-                    # print(source,get_distance(source,[i,j]),[i,j])
                     couldView.append([i, j])
 
     # Testing if in view
     for coord in couldView:
-        angle = ((get_angle([source[1], source[0]], coord) + (source[2] + facingConstant) * math.pi/2) % (math.pi*2))
+        angle = ((get_angle([source[1], source[0]], coord) + (source[2] + FACING_CONSTANT) * math.pi/2) % (math.pi*2))
         if angle < math.pi * 1.3 and angle > math.pi * 0.7:
             if check_visibility([source[1], source[0]], coord):
                 vision.append(coord)
