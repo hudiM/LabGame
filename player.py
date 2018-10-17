@@ -16,7 +16,7 @@ class Player:
         self.y = y
         self.facing = facing
         self.health = health
-        self.hearZone = {0: [0, 0]}
+        self.hearZone = {(x, y): 0}
         self.dfw = {0: [x, y-1], 2: [x, y+1], 1: [x+1, y], 3: [x-1, y]}
         self.dbw = {0: [x, y+1], 2: [x, y-1], 1: [x-1, y], 3: [x+1, y]}
 
@@ -56,49 +56,55 @@ class Player:
         return 0
 
     def turn(self, direction):
+        enemyAct = 0
         if type(direction) == str:
             if direction in ['left', 'bal', 'l']:
                 if self.facing == 0:
                     self.facing = 3
-                    enemy.enemyAction()
+                    enemyAct = 1
+                    globalLogic.activeActor += 1
                 else:
                     self.facing -= 1
-                    enemy.enemyAction()
+                    enemyAct = 1
+                    globalLogic.activeActor += 1
             if direction in ['right', 'jobb', 'r']:
                 if self.facing == 3:
                     self.facing = 0
-                    enemy.enemyAction()
+                    enemyAct = 1
+                    globalLogic.activeActor += 1
                 else:
                     self.facing += 1
-                    enemy.enemyAction()
+                    enemyAct = 1
+                    globalLogic.activeActor += 1
         else:
             self.facing = direction
-        return
+        return enemyAct
 
     def attack(self):
         self.updateCoords("dfw")
         if self.isMonster(self.dfw[self.facing]):
-            self.damageMonster(self.dfw[self.facing])
-        return
+            message = self.damageMonster(self.dfw[self.facing])
+        return message
 
     def updateHearZone(self):
         self.hearZone = echo.read_zone([self.x, self.y], 8)
         return
 
     def damageMonster(self, coords):
-        enemy.enemyAction()
         for monster in enemy.enemies:
             if coords[0] == monster.x and coords[1] == monster.y:
                 monster.health -= 1
                 if monster.health == 0:
-                    print('Monster defeated!')
+                    message = 'Monster defeated!'
                     enemy.enemies.remove(monster)
                 else:
-                    print(f'Enemy\'s health: {monster.health}')
+                    message = (f'Monster\'s health: {monster.health}')
+                globalLogic.activeActor += 1
                 break
-        return
+        return message
 
     def move(self, direction):  # enemies take action if you actually move
+        enemyAct = 0
         if direction == "forward":
             self.updateCoords("dfw")
             if not self.isMonster(self.dfw[self.facing]):
@@ -108,7 +114,8 @@ class Player:
                     if globalLogic.stop > 0:
                         return
                     self.updateHearZone()
-                    enemy.enemyAction()
+                    enemyAct = 1
+                    globalLogic.activeActor += 1
         elif direction == "backward":
             self.updateCoords("dbw")
             if not self.isMonster(self.dbw[self.facing]):
@@ -118,10 +125,11 @@ class Player:
                     if globalLogic.stop > 0:
                         return
                     self.updateHearZone()
-                    enemy.enemyAction()
+                    enemyAct = 1
+                    globalLogic.activeActor += 1
         else:
             printErr('Something went wrong')
-        return
+        return enemyAct
 
     def directionMove(self, direction):
         if direction == 'fw':
