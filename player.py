@@ -81,6 +81,10 @@ class Player:
             self.damageMonster(self.dfw[self.facing])
         return
 
+    def updateHearZone(self):
+        self.hearZone = echo.read_zone([self.x, self.y], 8)
+        return
+
     def damageMonster(self, coords):
         enemy.enemyAction()
         for monster in enemy.enemies:
@@ -100,14 +104,20 @@ class Player:
             if not self.isMonster(self.dfw[self.facing]):
                 if self.isPassable(self.dfw[self.facing]):
                     self.directionMove('fw')
-                    hearZone = echo.read_zone([self.x, self.y], 8)
+                    self.isExit()
+                    if globalLogic.stop > 0:
+                        return
+                    self.updateHearZone()
                     enemy.enemyAction()
         elif direction == "backward":
             self.updateCoords("dbw")
             if not self.isMonster(self.dbw[self.facing]):
                 if self.isPassable(self.dbw[self.facing]):
                     self.directionMove('bw')
-                    hearZone = echo.read_zone([self.x, self.y], 8)
+                    self.isExit()
+                    if globalLogic.stop > 0:
+                        return
+                    self.updateHearZone()
                     enemy.enemyAction()
         else:
             printErr('Something went wrong')
@@ -137,5 +147,6 @@ class Player:
 
 def spawn(x, y, facing, health):
     player_id = Player(x, y, facing, health)
+    player_id.updateHearZone()
     players.append(player_id)
     return

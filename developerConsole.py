@@ -6,6 +6,7 @@ import globalLogic
 import color
 import copy
 import common
+import devTools
 
 
 def openConsole():
@@ -13,6 +14,8 @@ def openConsole():
     print(f'Player Health: {player.players[0].health}')
     display()
     cmd = input(color.orange+'input'+color.baseColor+': ').split(' ')
+    if cmd[0] in ['e', 'exit', 'q', 'quit', 'qqq']:
+        globalLogic.stop = 3
     if cmd[0] == 'player':
         if cmd[1] in ['hp', 'health']:
             player.players[0].health = int(cmd[2])
@@ -44,10 +47,4 @@ def display():
     elif globalLogic.dev == 1:
         level.paint_level()
     elif globalLogic.dev == 2:           # dev mode 2
-        devMap = copy.deepcopy(level.world)
-        devMap[player.y][player.x] = (color.green+'T'+color.reset)
-        for monster in enemy.enemies:
-            devMap[monster.y][monster.x] = (color.red+'E'+color.reset)
-        for i in devMap:
-            print(''.join(i))
-        print(f'Facing: {player.players[0].facing}')
+        devTools.paint_dev()

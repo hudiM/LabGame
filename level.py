@@ -182,11 +182,13 @@ def paint_vision():
         monsterID += 1
 
     player_ID = 0
+    vision = []
+    hearing = []
     for current_player in player.players:
         tempWorld[current_player.y][current_player.x] = "P" + str(player_ID)
         player_ID += 1
-        vision = in_vision([current_player.y, current_player.x, current_player.facing], 5)
-        hearing = echo.read_zone([current_player.x, current_player.y], 8).keys()
+        vision.extend(in_vision([current_player.x, current_player.y, current_player.facing], 5))
+        hearing.extend(echo.read_zone([current_player.x, current_player.y], 8).keys())
 
     # walls = [] # For debugging purposes
 
@@ -208,7 +210,7 @@ def paint_vision():
                     except BaseException:
                         pass
             else:
-                if (i, j) in hearing:
+                if (j, i) in hearing:
                     tile = tempWorld[i][j]
                     if tile[0] == "M":
                         paint += monsterColor + "■" + baseColor
@@ -231,25 +233,25 @@ def in_vision(source, viewDistance=8.5):
     CeilViewDistance = math.ceil(viewDistance)
 
     # Check in a circle, add cells within to possible vision (couldView)
-    for i in range(source[0] - CeilViewDistance, source[0] + CeilViewDistance + 1):
-        for j in range(source[1] - CeilViewDistance, source[1] + CeilViewDistance + 1):
+    for i in range(source[1] - CeilViewDistance, source[1] + CeilViewDistance + 1):
+        for j in range(source[0] - CeilViewDistance, source[0] + CeilViewDistance + 1):
             if in_world(i, j):
-                if get_distance(source, [i, j]) <= viewDistance:
+                if get_distance(source, [j, i]) <= viewDistance:
                     # print(source,get_distance(source,[i,j]),[i,j])
                     couldView.append([i, j])
 
     # Testing if in view
     for coord in couldView:
-        angle = ((get_angle([source[0], source[1]], coord) + (source[2] + facingConstant) * math.pi/2) % (math.pi*2))
+        angle = ((get_angle([source[1], source[0]], coord) + (source[2] + facingConstant) * math.pi/2) % (math.pi*2))
         if angle < math.pi * 1.3 and angle > math.pi * 0.7:
-            if check_visibility([source[0], source[1]], coord):
+            if check_visibility([source[1], source[0]], coord):
                 vision.append(coord)
 
     # At the end add area around player in a 3x3 area
 
     for i in range(0, 3):
         for j in range(0, 3):
-            extraVision = [source[0] - 1 + i, source[1] - 1 + j]
+            extraVision = [source[1] - 1 + i, source[0] - 1 + j]
             if extraVision not in vision:
                 vision.append(extraVision)
 

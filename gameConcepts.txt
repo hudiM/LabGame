@@ -20,6 +20,18 @@ nem spawnolhat X-re
 T trigger
 F repeatable trigger
 
+isHear
+isSee
+setState
+move
+
+find closest point towards player
+	get current positions distance
+	ask for closest distance positions
+if needed turn towards it
+move to new position
+
+
 Combat:
 	hp = 10
 	enemyhp = 2
