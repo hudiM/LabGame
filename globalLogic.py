@@ -19,44 +19,6 @@ activeActor = 0
 
 
 def main():
-<<<<<<< HEAD
-    global stop, dev
-    keys = {'w': (player.players[0].move, "forward"),
-            's': (player.players[0].move, "backward"),
-            'a': (player.players[0].turn, "left"),
-            'd': (player.players[0].turn, "right"),
-            'f': (player.players[0].attack,),
-            'i': (player.players[1].move, "forward"),
-            'k': (player.players[1].move, "backward"),
-            'j': (player.players[1].turn, "left"),
-            'l': (player.players[1].turn, "right"),
-            'o': (player.players[1].attack,),
-            'r': (enemy.enemyAction,),
-            'e': (stopGame,),
-            '0': (developerConsole.openConsole,)}
-    print(f'Player Health: {player.players[0].health}')
-    # level.paint_vision()
-    while(1):
-        #  --------------- dev mode 0 ----------------------
-        if dev == 0:
-            level.paint_vision()
-        #  --------------- dev mode 1 ----------------------
-        elif dev == 1:
-            level.paint_level()
-        #  --------------- dev mode 2 ----------------------
-        elif dev == 2:
-            devTools.paint_dev()
-        #  -------------------------------------------------
-        key = keyboard.getch()
-        print(key)
-        os.system('clear')
-        print(f'Player Health: {player.players[0].health}')
-        # keys[0][keyboard.getch()]()
-        try:
-            keys[key][0](*keys[key][1:])
-        except BaseException:
-            pass
-=======
     global stop, dev, keys, activeActor
     level.load_level(sys.path[0]+'/maps/devMap')
     player.spawn(2, 2, 2, 5)
@@ -88,7 +50,6 @@ def main():
         if actionVar is not None:
             enemy.enemyAction()
         activeActor = 0
->>>>>>> 3d4450c37df375cbd16e5e2256fa10205de177d4
         if stop > 0:
             break
     os.system('clear')
