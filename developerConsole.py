@@ -31,6 +31,8 @@ def openConsole():
             globalLogic.dev = 1
         if cmd[1] == '2':
             globalLogic.dev = 2
+        if cmd[1] == '3':
+            globalLogic.dev = 3
     if cmd[0] == 'enemy':
         if cmd[1] == 'spawn':
             enemy.spawn(int(cmd[2]), int(cmd[3]), int(cmd[4]), int(cmd[5]))
@@ -42,9 +44,11 @@ def openConsole():
 
 
 def display():
-    if globalLogic.dev == 0:    # def mode 0
+    if globalLogic.dev == 0:            # def mode 0
         level.paint_vision()
-    elif globalLogic.dev == 1:
+    elif globalLogic.dev == 1:          # dev mode 1
         level.paint_level()
-    elif globalLogic.dev == 2:           # dev mode 2
-        devTools.paint_dev()
+    elif globalLogic.dev == 2:          # dev mode 2 player 1
+        devTools.paint_dev(0)
+    elif globalLogic.dev == 3:          # dev mode 2 player 2
+        devTools.paint_dev(1)

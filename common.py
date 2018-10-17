@@ -16,6 +16,16 @@ def printDebug(debugmsg):
     return
 
 
+def printDebugS(debugmsg):
+    print(color.reset+'['+color.aqua+'Debug'+color.reset+'] '+str(debugmsg)+color.green+' begin'+color.reset+'.')
+    return
+
+
+def printDebugE(debugmsg):
+    print(color.reset+'['+color.aqua+'Debug'+color.reset+'] '+str(debugmsg)+color.red+' end'+color.reset+'.')
+    return
+
+
 def keyInput():
     pressedKey = input('Key: ')
     if pressedKey == 'w':
