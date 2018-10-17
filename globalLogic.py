@@ -10,15 +10,30 @@ import copy
 import color
 import enemy
 import developerConsole
+import devTools
 
 stop = 0
-dev = 0
+dev = 2
 
 
 def main():
     global stop, dev
     level.load_level(sys.path[0]+'/maps/level1')
-    player.spawn(20, 5, 0, 50)
+    player.spawn(2, 2, 0, 50)
+    player.spawn(36, 5, 0, 50)
+    keys = {'w': (player.players[0].move, "forward"),
+            's': (player.players[0].move, "backward"),
+            'a': (player.players[0].turn, "left"),
+            'd': (player.players[0].turn, "right"),
+            'f': (player.players[0].attack,),
+            'i': (player.players[1].move, "forward"),
+            'k': (player.players[1].move, "backward"),
+            'j': (player.players[1].turn, "left"),
+            'l': (player.players[1].turn, "right"),
+            'o': (player.players[1].attack,),
+            'r': (enemy.enemyAction,),
+            'e': (stopGame,),
+            '0': (developerConsole.openConsole,)}
     print(f'Player Health: {player.players[0].health}')
     # level.paint_vision()
     while(1):
@@ -30,39 +45,30 @@ def main():
             level.paint_level()
         #  --------------- dev mode 2 ----------------------
         elif dev == 2:
-            player.players[0].hearZone = echo.read_zone([player.players[0].x, player.players[0].y], 8)
-            devMap = copy.deepcopy(level.world)
-            for item in list(player.players[0].hearZone.items()):
-                devMap[item[0][1]][item[0][0]] = color.lightblue+str(item[1])+color.reset
-            devMap[player.players[0].y][player.players[0].x] = (color.green+'P'+color.reset)
-            for monster in enemy.enemies:
-                devMap[monster.y][monster.x] = (color.red+'E'+color.reset)
-            for i in devMap:
-                print(''.join(i))
-            print(f'Facing: {player.players[0].facing}')
+            devTools.paint_dev()
         #  -------------------------------------------------
         key = keyboard.getch()
+        print(key)
         os.system('clear')
         print(f'Player Health: {player.players[0].health}')
-        if key == 'w':
-            player.players[0].move("forward")
-        if key == 's':
-            player.players[0].move("backward")
-        if key == "a":
-            player.players[0].turn("left")
-        if key == "d":
-            player.players[0].turn("right")
-        if key == "f":
-            player.players[0].attack()
-        if key == "r":
-            enemy.enemyAction()
-        if key == '0':
-            developerConsole.openConsole()
-        if player.players[0].isExit() or key == 'e' or stop == 1:
+        # keys[0][keyboard.getch()]()
+        try:
+            keys[key][0](*keys[key][1:])
+        except:
+            pass
+        if stop > 0:
             break
     os.system('clear')
     if stop == 1:
         print('Git Gud!')
     if stop == 2:
         print('Congratulations you got out! Somehow.')
+    if stop == 3:
+        print('Goodbye!')
     return 1
+
+
+def stopGame(value=3):
+    global stop
+    stop = value
+    return

@@ -15,6 +15,8 @@ class Monster:
         self.x = x
         self.health = health
         self.facing = facing
+        self.ap = 0
+        self.ai = 0
         self.d = {0: [x, y-1], 2: [x, y+1], 1: [x+1, y], 3: [x-1, y]}
 
     def updateCoords(self):
@@ -24,12 +26,13 @@ class Monster:
         self.d[3] = [self.x-1, self.y]
 
     def isPlayerInHearingDistance(self):
+        # print(player.players[0].hearZone.keys())
         if (self.x, self.y) in player.players[0].hearZone.keys():
-            return 1
+            if player.players[0].hearZone.get((self.x, self.y)) <= 5:
+                return 1
         return 0
 
     def isPlayerAround(self):
-        self.isPlayerInHearingDistance()
         if player.players[0].x == self.x and player.players[0].y == self.y-1:
             return 0
         elif player.players[0].x == self.x and player.players[0].y == self.y+1:
@@ -40,6 +43,18 @@ class Monster:
             return 3
         else:
             return -1
+
+    def setStates(self):
+        if False:
+            self.ap += 2
+            self.ai = 2
+        elif self.isPlayerInHearingDistance():
+            self.ap += 1
+            self.ai = 1
+        else:
+            self.ap += 0.5
+            self.ai = 0
+        return
 
     def attackPlayer(self):
         player.players[0].health -= 1
@@ -117,10 +132,22 @@ class Monster:
             else:
                 self.facing = 3
 
+    def chasePlayer(self):
+        pass
+
+    def action():
+        self.addAP()
+        while(self.ap >= 1):
+            if self.ai <= 0:
+                self.move()
+            elif self.ai > 0:
+                self.chasePlayer()
+            self.ap -= 1
+
 
 def enemyAction():
     for monster in enemies:
-        monster.lookForPlayer()
+        monster.action()
         pass
 
 
