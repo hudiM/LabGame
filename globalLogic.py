@@ -15,33 +15,49 @@ import devTools
 stop = 0
 dev = 2
 keys = {}
-activeActor = 0
 
 
 def main():
     global stop, dev, keys, activeActor
-    level.load_level(sys.path[0]+'/maps/devMap')
-    player.spawn(2, 2, 2, 5)
-    player.spawn(1, 1, 2, 5)
-    enemy.spawn(8, 8, 0, 3, 5)
+    player.spawn(11, 1, 1, 5, 'Asd')
+    player.spawn(1, 1, 2, 5, 'LuL')
+    enemy.spawn(8, 8, 0, 3, 5, 0)
     init()
     activeVar = None
-    display()
+    activeActor = 0
+    actionVar = None
+    display(activeActor)
     while(1):  # game logic
-        while(activeActor > (-1)):  # one round
+        turnVar = 0
+        while(turnVar < len(player.players)):  # one round
+            print('turnVar:'+str(turnVar)+'vs'+str(len(player.players))+'Active Player:'+str(activeActor))
             key = keyboard.getch()
             os.system('clear')
-            if activeActor == 0:
-                if key in ('w', 's', 'a', 'd', 'f', 'e', '0', 'r'):
-                    actionVar = keys[key][0](*keys[key][1:])
-                    if key == 'r':
-                        activeActor += 1
-            if activeActor == 1:
-                if key in ('A', 'B', 'C', 'D', 'í', 'e', '0', 'r'):
-                    actionVar = keys[key][0](*keys[key][1:])
-                    if key == 'r':
-                        activeActor += 1
-            display(msg)
+            for pid in player.players:
+                if pid.spawnid == 0 and activeActor == 0:
+                    if key in ('w', 's', 'a', 'd', 'f', 'e', '0', 'r'):
+                        actionVar = keys[key][0](*keys[key][1:])
+                        if actionVar is not None:
+                            common.printDebug('It works!')
+                            activeActor = nextPlayerTurn(activeActor, 1)
+                            if actionVar == 'exit':
+                                activeActor = 1
+                            turnVar += 1
+                        if key == 'r':
+                            activeActor = nextPlayerTurn(activeActor, 1)
+                            turnVar += 1
+                elif pid.spawnid == 1 and activeActor == 1:
+                    if key in ('A', 'B', 'C', 'D', 'í', 'e', '0', 'r'):
+                        actionVar = keys[key][0](*keys[key][1:])
+                        if actionVar is not None:
+                            activeActor = nextPlayerTurn(activeActor, 0)
+                            if actionVar == 'exit':
+                                activeActor = 0
+                            turnVar += 1
+                        if key == 'r':
+                            activeActor = nextPlayerTurn(activeActor, 0)
+                            turnVar += 1
+            display(activeActor, actionVar)
             common.printDebug(str(activeActor))
             if stop > 0:
                 break
@@ -49,7 +65,6 @@ def main():
                 break
         if actionVar is not None:
             enemy.enemyAction()
-        activeActor = 0
         if stop > 0:
             break
     os.system('clear')
@@ -60,6 +75,13 @@ def main():
     if stop == 3:
         print('Goodbye!')
     return 1
+
+
+def nextPlayerTurn(currentActor, nextActor):
+    if len(player.players) == 1:
+        return currentActor
+    elif len(player.players) > 1:
+        return nextActor
 
 
 def stopGame(value=3):
@@ -87,7 +109,7 @@ def init():
     return
 
 
-def display(msg=None):
+def display(currentPlayer, msg=None):
     #  --------------- dev mode 0 ----------------------
     if dev == 0:
         level.paint_vision()
@@ -103,14 +125,18 @@ def display(msg=None):
     #  -------------------------------------------------
     if msg is not None:
         print(msg)
-    displayHealth()
+    displayHealth(currentPlayer)
     return
 
 
-def displayHealth():
+def displayHealth(currentPlayer):
     if len(player.players) == 1:
-        print(f'Player 1 health: {player.players[0].health}')
+        print(f'{player.players[0].name} health: {player.players[0].health}')
     elif len(player.players) == 2:
-        print(f'Player 1 health: {player.players[0].health}')
-        print(f'Player 2 health: {player.players[1].health}')
+        if currentPlayer == 0:
+            print(color.bold+color.white+f'{player.players[0].name} health: {player.players[0].health}'+color.reset)
+            print(f'{player.players[1].name} health: {player.players[1].health}')
+        elif currentPlayer == 1:
+            print(f'{player.players[0].name} health: {player.players[0].health}')
+            print(color.bold+color.white+f'{player.players[1].name} health: {player.players[1].health}'+color.reset)
     return

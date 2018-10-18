@@ -11,19 +11,18 @@ import devTools
 
 def openConsole():
     os.system('clear')
-    print(f'Player Health: {player.players[0].health}')
     display()
     cmd = input(color.orange+'input'+color.baseColor+': ').split(' ')
     if cmd[0] in ['e', 'exit', 'q', 'quit', 'qqq']:
         globalLogic.stop = 3
     if cmd[0] == 'player':
         if cmd[1] in ['hp', 'health']:
-            player.players[0].health = int(cmd[2])
+            player.players[cmd[2]].health = int(cmd[3])
         if cmd[1] in ['tp', 'teleport']:
-            player.players[0].x = int(cmd[2])
-            player.players[0].y = int(cmd[3])
+            player.players[cmd[2]].x = int(cmd[3])
+            player.players[cmd[2]].y = int(cmd[4])
         if cmd[1] == 'face':
-            player.players[0].facing = int(cmd[2])
+            player.players[cmd[2]].facing = int(cmd[3])
     if cmd[0] in ['devmode', 'devmap']:
         if cmd[1] == '0':
             globalLogic.dev = 0
@@ -39,7 +38,6 @@ def openConsole():
     os.system('clear')
     if cmd[0] == 'printerr':
         common.printErr(''.join(cmd[1:]))
-    print(f'Player Health: {player.players[0].health}')
     return
 
 

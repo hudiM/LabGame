@@ -236,7 +236,7 @@ def enemyAction():
         pass
 
 
-def spawn(x, y, facing, health, hearingStr):
-    monster_id = Monster(x, y, facing, health, hearingStr)
+def spawn(x, y, facing, health, hearingStr, ap):
+    monster_id = Monster(x, y, facing, health, hearingStr, ap)
     enemies.append(monster_id)
     return
