@@ -96,7 +96,13 @@ def main_menu():
             load_game_menu()
             break
         elif key in ["e", "3"]:
-            print("Ending game")
+            os.system('clear')
+            print('''   ____                 _ _
+  / ___| ___   ___   __| | |__  _   _  ___
+ | |  _ / _ \ / _ \ / _` | '_ \| | | |/ _ \\
+ | |_| | (_) | (_) | (_| | |_) | |_| |  __/
+  \____|\___/ \___/ \__,_|_.__/ \__, |\___|
+                                |___/      ''')
             return 1
     return 0
 
