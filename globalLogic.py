@@ -69,25 +69,13 @@ def main():
     os.system('clear')
     if stop == 1:
         common.printGameOver()
+        print("\nPress enter to continue!")
+        wait_for_enter()
     elif stop == 2:
         common.printGameWon()
-        print('''   ____                            _         _       _   _
-  / ___|___  _ __   __ _ _ __ __ _| |_ _   _| | __ _| |_(_) ___  _ __
- | |   / _ \| '_ \ / _` | '__/ _` | __| | | | |/ _` | __| |/ _ \| '_ \\
- | |__| (_) | | | | (_| | | | (_| | |_| |_| | | (_| | |_| | (_) | | | |
-  \____\___/|_| |_|\__, |_|  \__,_|\__|\__,_|_|\__,_|\__|_|\___/|_| |_|
-                   |___/''')
-    elif stop == 3:
-        common.printQuit()
-        print('''   ____                 _ _
-  / ___| ___   ___   __| | |__  _   _  ___
- | |  _ / _ \ / _ \ / _` | '_ \| | | |/ _ \\
- | |_| | (_) | (_) | (_| | |_) | |_| |  __/
-  \____|\___/ \___/ \__,_|_.__/ \__, |\___|
-                                |___/      ''')
+        print("\nPress enter to continue!")
+        wait_for_enter()
     level.level_clean_up()
-    print("\nPress enter to continue!")
-    wait_for_enter()
     return 1
 
 
