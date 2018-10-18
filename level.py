@@ -12,6 +12,7 @@ import sys
 import keyboard
 from copy import deepcopy
 
+SAVE_GAME_PATH = "/saves"
 DIRECTION_INDEX = ["▲", "►", "▼", "◄"]
 world = []
 level_name = ""
@@ -22,45 +23,11 @@ EXIT_COLOR = "\033[38;2;244;167;66m"
 
 
 def get_save_files():
-    return [save_name for save_name in os.listdir(sys.path[0] + "/maps") if save_name[-4:] == ".sav"]
-
-
-def load_game_menu():
-    os.system('clear')
-    in_load_menu = True
-    saves = get_save_files()
-    list_stage = 0
-    print_load_menu(saves, list_stage)
-    while in_load_menu:
-        key = keyboard.getch()
-        if key == "A":
-            if list_stage > 0:
-                list_stage -= 1
-                print_load_menu(saves, list_stage)
-        elif key == "B":
-            if list_stage < int(len(saves)/9):
-                list_stage += 1
-                print_load_menu(saves, list_stage)
-        elif key in [str(i) for i in range(10)]:
-            if int(key) == 0:
-                in_load_menu = False
-            if int(key) > 0:
-                if int(key) <= len(saves) - list_stage * 9:
-                    load_level(sys.path[0]+'/maps/'+saves[int(key)-1 + 9*list_stage])
-                    in_load_menu = False
-
-
-def print_load_menu(saves, list_stage):
-    for list_number in range(9):
-        if 9*list_stage + list_number < len(saves):
-            print(str(list_number + 1), saves[9*list_stage + list_number][:-4])
-        else:
-            break
-    print("0 Back to main menu")
+    return [save_name for save_name in os.listdir(sys.path[0] + SAVE_GAME_PATH) if save_name[-4:] == ".sav"]
 
 
 def save_game(file_name):
-    with open('{}/maps/{}.sav'.format(sys.path[0], file_name), "w") as fi:
+    with open('{}{}/{}.sav'.format(sys.path[0], SAVE_GAME_PATH, file_name), "w") as fi:
         fi.write("layout\n")
         fi.write(level_name + "\n")
 
@@ -70,6 +37,7 @@ def save_game(file_name):
             fi.write(" ".join(("y", str(player.players[player_ID].y))) + "\n")
             fi.write(" ".join(("facing", str(player.players[player_ID].facing))) + "\n")
             fi.write(" ".join(("health", str(player.players[player_ID].health))) + "\n")
+            fi.write(" ".join(("name", str(player.players[player_ID].name))) + "\n")
             if player_ID == len(player.players) - 1:
                 fi.write("end\n")
             else:
@@ -81,127 +49,143 @@ def save_game(file_name):
             fi.write(" ".join(("y", str(enemy.enemies[enemy_ID].y))) + "\n")
             fi.write(" ".join(("facing", str(enemy.enemies[enemy_ID].facing))) + "\n")
             fi.write(" ".join(("health", str(enemy.enemies[enemy_ID].health))) + "\n")
-            # fi.write(" ".join(("hearing", str(enemy.enemies[enemy_ID].hearingStr))) + "\n")
-            # fi.write(" ".join(("ap", str(enemy.enemies[enemy_ID].ap))) + "\n")
+            fi.write(" ".join(("hearing", str(enemy.enemies[enemy_ID].hearingStr))) + "\n")
+            fi.write(" ".join(("ap", str(enemy.enemies[enemy_ID].ap))) + "\n")
             if enemy_ID == len(enemy.enemies) - 1:
                 fi.write("end\n")
             else:
                 fi.write("step\n")
 
 
-def load_level(fi):
+def load_level(fi, player_number=0, player_names=["Lali", "Béla"]):
     global world
     world = []
+    player_number_set = True if player_number == 0 else False
 
     # Reading entity info file
-    try:
-        with open(fi) as f:
+    with open(fi) as f:
 
-            mode = "seek"  # Start by seeking for other parts
-            # In case it is loaded from a standard file
-            enemy_ap = 0
-            enemy_hearing = 5
-            for line in f:
-                line = line[:-1].split(" ")
-                print(line)
-                time.sleep(0.001)
-                if mode == "seek":
-                    if line[0] in ["layout", "player", "trigger", "enemy"]:
-                        mode = line[0]
+        mode = "seek"  # Start by seeking for other parts
+        # In case it is loaded from a standard file
+        enemy_ap = 0
+        enemy_hearing = 5
+        current_player_id = 0
+        for line in f:
+            line = line[:-1].split(" ")
+            print(line)
+            time.sleep(0.1)
+            if mode == "seek":
+                if line[0] in ["layout", "player", "trigger", "enemy", "player_number", "player_names"]:
+                    mode = line[0]
+                    print(mode)
 
-                # Setting up level layout
-                elif mode == "layout":
-                    global level_name
-                    level_name = line[0]
-                    with open(sys.path[0] + '/maps/' + line[0]) as f:
-                        for line in f:
-                            row = []
-                            for i in range(0, len(line)):
-                                if line[i] != '\n':
-                                    row.append(line[i])
-                            world.append(row)
+            # Setting up level layout
+            elif mode == "layout":
+                global level_name
+                level_name = line[0]
+                with open(sys.path[0] + '/maps/' + line[0]) as f:
+                    for line in f:
+                        row = []
+                        for i in range(0, len(line)):
+                            if line[i] != '\n':
+                                row.append(line[i])
+                        world.append(row)
+                mode = "seek"
+
+            elif mode == "player_number":
+                player_number = line[1]
+
+            elif mode == "player_names":
+                player_names = line[1:]
+
+            # Looking for player properties
+            elif mode == "player":
+                if line[0] == "x":
+                    try:
+                        player_x = int(line[1])
+                    except BaseException:
+                        pass
+                elif line[0] == "y":
+                    try:
+                        player_y = int(line[1])
+                    except BaseException:
+                        pass
+                elif line[0] == "facing":
+                    try:
+                        player_facing = int(line[1])
+                    except BaseException:
+                        pass
+                elif line[0] == "health":
+                    try:
+                        player_health = int(line[1])
+                    except BaseException:
+                        pass
+                elif line[0] == "name":
+                    try:
+                        player_names[current_player_id] = int(line[1])
+                    except BaseException:
+                        pass
+                elif line[0] in ["end", "step"]:
+                    try:
+                        player.spawn(player_x, player_y, player_facing, player_health, player_names[current_player_id])
+                        print(player_names[current_player_id], "spawned.")
+                        current_player_id += 1
+                    except BaseException:
+                        print("player_names:", player_names)
+                        print("player_number:", current_player_id)
+                        print("Failed to spawn", player_names[current_player_id])
+                        time.sleep(0.5)
+                    if line[0] == "end":
+                        mode = "seek"
+                if current_player_id >= player_number:
                     mode = "seek"
 
-                # Looking for player properties
-                elif mode == "player":
-                    if line[0] == "x":
-                        try:
-                            player_x = int(line[1])
-                        except BaseException:
-                            pass
-                    elif line[0] == "y":
-                        try:
-                            player_y = int(line[1])
-                        except BaseException:
-                            pass
-                    elif line[0] == "facing":
-                        try:
-                            player_facing = int(line[1])
-                        except BaseException:
-                            pass
-                    elif line[0] == "health":
-                        try:
-                            player_health = int(line[1])
-                        except BaseException:
-                            pass
-                    elif line[0] in ["end", "step"]:
-                        try:
-                            player.spawn(player_x, player_y, player_facing, player_health)
-                            print("Player spawned.")
-                        except BaseException:
-                            print("Failed to spawn player.")
-                            time.sleep(0.5)
-                        if line[0] == "end":
-                            mode = "seek"
+            # Looking for enemy
+            elif mode == "enemy":
+                if line[0] == "x":
+                    try:
+                        enemy_x = int(line[1])
+                    except BaseException:
+                        pass
+                elif line[0] == "y":
+                    try:
+                        enemy_y = int(line[1])
+                    except BaseException:
+                        pass
+                elif line[0] == "facing":
+                    try:
+                        enemy_facing = int(line[1])
+                    except BaseException:
+                        pass
+                elif line[0] == "health":
+                    try:
+                        enemy_health = int(line[1])
+                    except BaseException:
+                        pass
+                elif line[0] == "ap":
+                    try:
+                        enemy_ap = int(line[1])
+                    except BaseException:
+                        pass
+                elif line[0] == "hearing":
+                    try:
+                        enemy_hearing = int(line[1])
+                    except BaseException:
+                        pass
+                elif line[0] in ["step", "end"]:
+                    try:
+                        enemy.spawn(enemy_x, enemy_y, enemy_facing, enemy_health, enemy_hearing, enemy_ap)
+                        enemy_ap = 0
+                        print("Enemy spawned successfully")
+                    except BaseException:
+                        print("Failed to spawn enemy")
+                        time.sleep(0.5)
+                    if line[0] == "end":
+                        mode = "seek"
 
-                # Looking for enemy
-                elif mode == "enemy":
-                    if line[0] == "x":
-                        try:
-                            enemy_x = int(line[1])
-                        except BaseException:
-                            pass
-                    elif line[0] == "y":
-                        try:
-                            enemy_y = int(line[1])
-                        except BaseException:
-                            pass
-                    elif line[0] == "facing":
-                        try:
-                            enemy_facing = int(line[1])
-                        except BaseException:
-                            pass
-                    elif line[0] == "health":
-                        try:
-                            enemy_health = int(line[1])
-                        except BaseException:
-                            pass
-                    elif line[0] == "ap":
-                        try:
-                            enemy_ap = int(line[1])
-                        except BaseException:
-                            pass
-                    elif line[0] == "hearing":
-                        try:
-                            enemy_hearing = int(line[1])
-                        except BaseException:
-                            pass
-                    elif line[0] in ["step", "end"]:
-                        try:
-                            enemy.spawn(enemy_x, enemy_y, enemy_facing, enemy_health)  # , enemy_hearing, enemy_ap)
-                            enemy_ap = 0
-                            print("Enemy spawned successfully")
-                        except BaseException:
-                            print("Failed to spawn enemy")
-                            time.sleep(0.5)
-                        if line[0] == "end":
-                            mode = "seek"
-
-    except BaseException:
-        # If we do not have a .inf file, we load a default player.
-        player.spawn(1, 1, 2, 50)
     print("Level Loaded!")
     time.sleep(0.5)
+    input("Press enter to continue")
     os.system('clear')
 
 
