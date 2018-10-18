@@ -1,7 +1,12 @@
 layout
 level1.ter
 player
-x 2
+x 1
+y 2
+facing 2
+health 50
+step
+x 3
 y 2
 facing 2
 health 50
