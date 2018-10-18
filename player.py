@@ -89,6 +89,7 @@ class Player:
 
     def attack(self):
         self.updateCoords("dfw")
+        message = None
         if self.isMonster(self.dfw[self.facing]):
             message = self.damageMonster(self.dfw[self.facing])
         return message

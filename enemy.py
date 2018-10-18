@@ -32,7 +32,7 @@ class Monster:
         # print(player.players[0].hearZone.keys())
         for pid in player.players:
             if (self.x, self.y) in pid.hearZone.keys():
-                if pid.hearZone.get((self.x, self.y)) <= 5:
+                if pid.hearZone.get((self.x, self.y)) <= self.hearingStr:
                     return 1
         return 0
 
@@ -47,18 +47,6 @@ class Monster:
             elif pid.x == self.x-1 and pid.y == self.y:
                 return 3
         return -1
-
-    def setStates(self):
-        if False:
-            self.ap += 2
-            self.ai = 2
-        elif self.isPlayerInHearingDistance():
-            self.ap += 1
-            self.ai = 1
-        else:
-            self.ap += 0.5
-            self.ai = 0
-        return
 
     def isMonster(self, coords):
         for enemyEntity in enemies:
@@ -131,22 +119,13 @@ class Monster:
             else:
                 self.facing = 3
 
-    def action(self):
-        self.addAP()
-        while(self.ap >= 1):
-            if self.ai <= 0:
-                self.move()
-            elif self.ai > 0:
-                self.chasePlayer()
-            self.ap -= 1
-
     def lookupPlayerInHearingDistance(self):  # add so that it checks for the closest player
         closestPlayer = 0
         playerDist = 99
         # print(player.players[0].hearZone.keys())
         for pid in player.players:
             if (self.x, self.y) in pid.hearZone.keys():
-                if pid.hearZone.get((self.x, self.y)) <= 5:
+                if pid.hearZone.get((self.x, self.y)) <= self.hearingStr:
                     if playerDist > pid.hearZone.get((self.x, self.y)):
                         playerDist = pid.hearZone.get((self.x, self.y))
                         closestplayer = pid
@@ -170,7 +149,6 @@ class Monster:
         return 0
 
     def attackPlayer(self, loc):
-        printDebugS('attack')
         for pid in player.players:
             if pid.x == loc[0] and pid.y == loc[1]:
                 pid.health -= 1
@@ -193,13 +171,9 @@ class Monster:
                             globalLogic.keys.pop('í')
                     except:
                         pass
-        printDebugE('attack')
         return
 
     def moveTowardsPlayer(self, loc):
-        printDebugS('move')
-        printDebug(str(loc))
-        printDebug(str(self.d[self.facing]))
         if self.d[self.facing] == loc:
             if not self.isMonster(loc):
                 if self.isPlayer(loc):
@@ -211,28 +185,40 @@ class Monster:
             for i in range(4):
                 if self.d[i] == loc:
                     self.facing = i
-        printDebugE('move')
         return
 
     def chasePlayer(self):
-        printDebugS('chase player')
         nextLoc = self.findClosestPlayerLocation()
         self.moveTowardsPlayer(nextLoc)
-        printDebugE('chase player')
         return
 
-    def debugAction(self):
+    def setStates(self):
+        if False:
+            self.ap += 2
+            self.ai = 2
+        elif self.isPlayerInHearingDistance():
+            self.ap += 1
+            self.ai = 1
+        else:
+            self.ap += 0.5
+            self.ai = 0
+        return
+
+    def action(self):
+        self.setStates()
         self.updateCoords()
-        printDebugS('enemy action')
-        if self.isPlayerInHearingDistance():
-            self.chasePlayer()
-        printDebugE('enemy action')
+        while(self.ap >= 1):
+            if self.ai <= 0:
+                self.move()
+            elif self.ai > 0:
+                self.chasePlayer()
+            self.ap -= 1
         return
 
 
 def enemyAction():
     for monster in enemies:
-        monster.debugAction()
+        monster.action()
         pass
 
 
