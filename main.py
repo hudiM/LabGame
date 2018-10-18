@@ -3,7 +3,7 @@ import menu
 
 
 def main():
-    menu.main_menu()
+    return menu.main_menu()
 
 
 os.system('clear')

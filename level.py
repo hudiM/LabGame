@@ -384,6 +384,12 @@ def check_visibility(source, target, step=0.75, sensitivity=0.5):
 def in_world(i, j):
     return (i >= 0 and j >= 0 and i < len(world) and j < len(world[i]))
 
+
+def level_clean_up():
+    enemy.enemies = []
+    player.players = []
+    world = []
+
 # Fal = ▓
 # Terep = ░
 # Player/ Enemy = ▲ ► ▼ ◄

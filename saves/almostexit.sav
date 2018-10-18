@@ -1,0 +1,25 @@
+layout
+level1.ter
+player_number 1
+player
+x 37
+y 5
+facing 1
+health 45
+name cickó
+end
+enemy
+x 36
+y 5
+facing 0
+health 3
+hearing 6
+ap 0.0
+step
+x 3
+y 9
+facing 0
+health 3
+hearing 6
+ap 0.0
+end

@@ -69,10 +69,14 @@ def main():
     os.system('clear')
     if stop == 1:
         print('Git Gud!')
-    if stop == 2:
+    elif stop == 2:
         print('Congratulations you got out!')
-    if stop == 3:
+    elif stop == 3:
         print('Goodbye!')
+    print("\nPress enter to continue!")
+    level.level_clean_up()
+    wait_for_enter()
+
     return 1
 
 
@@ -90,7 +94,10 @@ def stopGame(value=3):
 
 
 def init():
-    global keys
+    global keys, stop, activeActor
+    stop = 0
+    activeActor = 0
+    keys = {}
     keys['r'] = (enemy.enemyAction,)
     keys['e'] = (menu.in_game_menu,)
     keys['0'] = (developerConsole.openConsole,)
@@ -139,3 +146,9 @@ def displayHealth(currentPlayer):
             print(f'{player.players[0].name} health: {player.players[0].health}')
             print(color.bold+color.white+f'{player.players[1].name} health: {player.players[1].health}'+color.reset)
     return
+
+
+def wait_for_enter():
+    while True:
+        if keyboard.getch() == '\r':
+            break

@@ -97,7 +97,8 @@ def main_menu():
             break
         elif key in ["e", "3"]:
             print("Ending game")
-            break
+            return 1
+    return 0
 
 
 def new_game_menu():
