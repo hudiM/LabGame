@@ -31,9 +31,6 @@ def main_menu():
 def new_game_menu():
     os.system('clear')
     level.load_level(sys.path[0]+'/maps/devMap.inf')
-    player.spawn(2, 2, 2, 5)
-    player.spawn(1, 1, 2, 5)
-    enemy.spawn(8, 8, 0, 3, 5)
     error = globalLogic.main()
     return error
 

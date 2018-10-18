@@ -11,11 +11,13 @@ players = []
 
 
 class Player:
-    def __init__(self, x, y, facing, health):
+    def __init__(self, x, y, facing, health, spawnid, name='player'):
         self.x = x
         self.y = y
         self.facing = facing
         self.health = health
+        self.spawnid = spawnid
+        self.name = name
         self.hearZone = {(x, y): 0}
         self.dfw = {0: [x, y-1], 2: [x, y+1], 1: [x+1, y], 3: [x-1, y]}
         self.dbw = {0: [x, y+1], 2: [x, y-1], 1: [x-1, y], 3: [x+1, y]}
@@ -39,8 +41,11 @@ class Player:
         return 1
 
     def isExit(self):
+        global players
         if level.world[self.y][self.x] == 'E':
-            globalLogic.stop = 2
+            players.remove(self)
+            if len(players) == 0:
+                globalLogic.stop = 2
             return 1
         return 0
 
@@ -50,34 +55,36 @@ class Player:
                 return 1
         return 0
 
+    def isPlayer(self, coords):
+        for pid in players:
+            if coords[0] == pid.x and coords[1] == pid.y:
+                return 1
+        return 0
+
     def isTrigger(self, a, b):  # unused at the moment
         if level.world[b][a] in ['T', 'X', 'F']:
             return 1
         return 0
 
     def turn(self, direction):
-        enemyAct = 0
         if type(direction) == str:
             if direction in ['left', 'bal', 'l']:
                 if self.facing == 0:
                     self.facing = 3
                     enemyAct = 1
-                    globalLogic.activeActor += 1
                 else:
                     self.facing -= 1
                     enemyAct = 1
-                    globalLogic.activeActor += 1
             if direction in ['right', 'jobb', 'r']:
                 if self.facing == 3:
                     self.facing = 0
                     enemyAct = 1
-                    globalLogic.activeActor += 1
                 else:
                     self.facing += 1
                     enemyAct = 1
-                    globalLogic.activeActor += 1
         else:
             self.facing = direction
+            enemyAct = 1
         return enemyAct
 
     def attack(self):
@@ -99,34 +106,34 @@ class Player:
                     enemy.enemies.remove(monster)
                 else:
                     message = (f'Monster\'s health: {monster.health}')
-                globalLogic.activeActor += 1
                 break
         return message
 
     def move(self, direction):  # enemies take action if you actually move
-        enemyAct = 0
+        enemyAct = None
         if direction == "forward":
             self.updateCoords("dfw")
             if not self.isMonster(self.dfw[self.facing]):
-                if self.isPassable(self.dfw[self.facing]):
-                    self.directionMove('fw')
-                    self.isExit()
-                    if globalLogic.stop > 0:
-                        return
-                    self.updateHearZone()
-                    enemyAct = 1
-                    globalLogic.activeActor += 1
+                if not self.isPlayer(self.dfw[self.facing]):
+                    if self.isPassable(self.dfw[self.facing]):
+                        enemyAct = 1
+                        self.directionMove('fw')
+                        if self.isExit() == 1:
+                            return 'exit'
+                        if globalLogic.stop > 0:
+                            return enemyAct
+                        self.updateHearZone()
         elif direction == "backward":
             self.updateCoords("dbw")
             if not self.isMonster(self.dbw[self.facing]):
-                if self.isPassable(self.dbw[self.facing]):
-                    self.directionMove('bw')
-                    self.isExit()
-                    if globalLogic.stop > 0:
-                        return
-                    self.updateHearZone()
-                    enemyAct = 1
-                    globalLogic.activeActor += 1
+                if not self.isPlayer(self.dbw[self.facing]):
+                    if self.isPassable(self.dbw[self.facing]):
+                        enemyAct = 1
+                        self.directionMove('bw')
+                        self.isExit()
+                        if globalLogic.stop > 0 or players.count(self) < 1:
+                            return enemyAct
+                        self.updateHearZone()
         else:
             printErr('Something went wrong')
         return enemyAct
@@ -153,8 +160,8 @@ class Player:
         return
 
 
-def spawn(x, y, facing, health):
-    player_id = Player(x, y, facing, health)
+def spawn(x, y, facing, health, name):
+    player_id = Player(x, y, facing, health, len(players), name)
     player_id.updateHearZone()
     players.append(player_id)
     return
