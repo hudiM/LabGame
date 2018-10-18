@@ -13,6 +13,7 @@ import keyboard
 from copy import deepcopy
 
 SAVE_GAME_PATH = "/saves"
+LEVEL_PATH = "/maps"
 DIRECTION_INDEX = ["▲", "►", "▼", "◄"]
 world = []
 level_name = ""
@@ -26,10 +27,16 @@ def get_save_files():
     return [save_name for save_name in os.listdir(sys.path[0] + SAVE_GAME_PATH) if save_name[-4:] == ".sav"]
 
 
+def get_level_files():
+    return [level_name for level_name in os.listdir(sys.path[0] + LEVEL_PATH) if level_name[-4:] == ".inf"]
+
+
 def save_game(file_name):
     with open('{}{}/{}.sav'.format(sys.path[0], SAVE_GAME_PATH, file_name), "w") as fi:
         fi.write("layout\n")
         fi.write(level_name + "\n")
+
+        fi.write("player_number {}\n".format(len(player.players)))
 
         fi.write("player\n")
         for player_ID in range(len(player.players)):
@@ -60,7 +67,7 @@ def save_game(file_name):
 def load_level(fi, player_number=0, player_names=["Lali", "Béla"]):
     global world
     world = []
-    player_number_set = True if player_number == 0 else False
+    player_number_set = False if player_number == 0 else True
 
     # Reading entity info file
     with open(fi) as f:
@@ -72,12 +79,18 @@ def load_level(fi, player_number=0, player_names=["Lali", "Béla"]):
         current_player_id = 0
         for line in f:
             line = line[:-1].split(" ")
-            print(line)
-            time.sleep(0.1)
+            # print(line)
+            # time.sleep(0.01)
             if mode == "seek":
-                if line[0] in ["layout", "player", "trigger", "enemy", "player_number", "player_names"]:
+                if line[0] in ["layout", "player", "trigger", "enemy"]:
                     mode = line[0]
-                    print(mode)
+                    # print(mode)
+                    # print("player_number_set =", player_number_set)
+                    if line[0] == "player" and not player_number_set:
+                        player_number += 1
+                        # print("player_number =", player_number)
+                elif line[0] == "player_number":
+                    player_number = int(line[1])
 
             # Setting up level layout
             elif mode == "layout":
@@ -91,12 +104,6 @@ def load_level(fi, player_number=0, player_names=["Lali", "Béla"]):
                                 row.append(line[i])
                         world.append(row)
                 mode = "seek"
-
-            elif mode == "player_number":
-                player_number = line[1]
-
-            elif mode == "player_names":
-                player_names = line[1:]
 
             # Looking for player properties
             elif mode == "player":
@@ -127,17 +134,20 @@ def load_level(fi, player_number=0, player_names=["Lali", "Béla"]):
                         pass
                 elif line[0] in ["end", "step"]:
                     try:
+                        # print("Trying to spawn player")
                         player.spawn(player_x, player_y, player_facing, player_health, player_names[current_player_id])
-                        print(player_names[current_player_id], "spawned.")
+                        # print(player_names[current_player_id], "spawned.")
                         current_player_id += 1
                     except BaseException:
-                        print("player_names:", player_names)
-                        print("player_number:", current_player_id)
-                        print("Failed to spawn", player_names[current_player_id])
-                        time.sleep(0.5)
+                        pass
+                        # print("player_names:", player_names)
+                        # print("player_number:", current_player_id)
+                        # print("Failed to spawn", player_names[current_player_id])
+                        # time.sleep(0.5)
                     if line[0] == "end":
                         mode = "seek"
                 if current_player_id >= player_number:
+                    # print(current_player_id, ">=", player_number)
                     mode = "seek"
 
             # Looking for enemy
@@ -176,16 +186,17 @@ def load_level(fi, player_number=0, player_names=["Lali", "Béla"]):
                     try:
                         enemy.spawn(enemy_x, enemy_y, enemy_facing, enemy_health, enemy_hearing, enemy_ap)
                         enemy_ap = 0
-                        print("Enemy spawned successfully")
+                        # print("Enemy spawned successfully")
                     except BaseException:
-                        print("Failed to spawn enemy")
-                        time.sleep(0.5)
+                        pass
+                        # print("Failed to spawn enemy")
+                        # time.sleep(0.5)
                     if line[0] == "end":
                         mode = "seek"
 
-    print("Level Loaded!")
-    time.sleep(0.5)
-    input("Press enter to continue")
+    # print("Level Loaded!")
+    # time.sleep(0.5)
+    # input("Press enter to continue")
     os.system('clear')
 
 

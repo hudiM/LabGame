@@ -11,17 +11,15 @@ import color
 import enemy
 import developerConsole
 import devTools
+import menu
 
 stop = 0
-dev = 2
+dev = 0
 keys = {}
 
 
 def main():
     global stop, dev, keys, activeActor
-    player.spawn(11, 1, 1, 5, 'Asd')
-    player.spawn(1, 1, 2, 5, 'LuL')
-    enemy.spawn(8, 8, 0, 3, 5, 0)
     init()
     activeVar = None
     activeActor = 0
@@ -93,7 +91,7 @@ def stopGame(value=3):
 def init():
     global keys
     keys['r'] = (enemy.enemyAction,)
-    keys['e'] = (stopGame,)
+    keys['e'] = (menu.in_game_menu,)
     keys['0'] = (developerConsole.openConsole,)
     keys['w'] = (player.players[0].move, "forward")
     keys['s'] = (player.players[0].move, "backward")
