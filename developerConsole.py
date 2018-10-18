@@ -43,7 +43,7 @@ def openConsole():
             globalLogic.dev = 3
     if cmd[0] == 'enemy':
         if cmd[1] == 'spawn':
-            enemy.spawn(int(cmd[2]), int(cmd[3]), int(cmd[4]), int(cmd[5]))
+            enemy.spawn(int(cmd[2]), int(cmd[3]), int(cmd[4]), int(cmd[5]), int(cmd[6]))
     os.system('clear')
     if cmd[0] == 'printerr':
         common.printErr(''.join(cmd[1:]))
