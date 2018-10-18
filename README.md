@@ -18,14 +18,14 @@ Key | Action
 ## Player commands
 Command | Effect
 --- | ---
-`player hp <amount>` | Sets the players health points
-`player tp <x> <y>` | Teleports the player to given cordinates
-`player face <0-3>` | Turns the player towards the given direction (0 - up, 1 - right, 2 - down, 3 - left)
+`player hp <playerid> <amount>` | Sets the players health points
+`player tp <playerid> <x> <y>` | Teleports the player to given cordinates
+`player face <playerid> <0-3>` | Turns the player towards the given direction (0 - up, 1 - right, 2 - down, 3 - left)
 
 ## Enemy commands
 Command | Effect
 --- | ---
-`enemy spawn <x> <y> <0-3> <health>` | Spawns an enemy with given parameters
+`enemy spawn <x> <y> <0-3> <health> <hearing range>` | Spawns an enemy with given parameters
 
 ## Display commands
 Command | Effect

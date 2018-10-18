@@ -29,7 +29,6 @@ class Monster:
         self.d[3] = (self.x-1, self.y)
 
     def isPlayerInHearingDistance(self):
-        # print(player.players[0].hearZone.keys())
         for pid in player.players:
             if (self.x, self.y) in pid.hearZone.keys():
                 if pid.hearZone.get((self.x, self.y)) <= self.hearingStr:
@@ -50,7 +49,7 @@ class Monster:
 
     def isMonster(self, coords):
         for enemyEntity in enemies:
-            if coords[1] == enemyEntity.x and coords[0] == enemyEntity.y:
+            if coords[0] == enemyEntity.x and coords[1] == enemyEntity.y:
                 return 1
         return 0
 
@@ -119,10 +118,9 @@ class Monster:
             else:
                 self.facing = 3
 
-    def lookupPlayerInHearingDistance(self):  # add so that it checks for the closest player
+    def lookupPlayerInHearingDistance(self):
         closestPlayer = 0
         playerDist = 99
-        # print(player.players[0].hearZone.keys())
         for pid in player.players:
             if (self.x, self.y) in pid.hearZone.keys():
                 if pid.hearZone.get((self.x, self.y)) <= self.hearingStr:
@@ -222,7 +220,7 @@ def enemyAction():
         pass
 
 
-def spawn(x, y, facing, health, hearingStr, ap):
+def spawn(x, y, facing, health, hearingStr, ap=0):
     monster_id = Monster(x, y, facing, health, hearingStr, ap)
     enemies.append(monster_id)
     return
