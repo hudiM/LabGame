@@ -17,12 +17,21 @@ def openConsole():
         globalLogic.stop = 3
     if cmd[0] == 'player':
         if cmd[1] in ['hp', 'health']:
-            player.players[cmd[2]].health = int(cmd[3])
+            try:
+                player.players[int(cmd[2])].health = int(cmd[3])
+            except:
+                pass
         if cmd[1] in ['tp', 'teleport']:
-            player.players[cmd[2]].x = int(cmd[3])
-            player.players[cmd[2]].y = int(cmd[4])
+            try:
+                player.players[int(cmd[2])].x = int(cmd[3])
+                player.players[int(cmd[2])].y = int(cmd[4])
+            except:
+                pass
         if cmd[1] == 'face':
-            player.players[cmd[2]].facing = int(cmd[3])
+            try:
+                player.players[int(cmd[2])].facing = int(cmd[3])
+            except:
+                pass
     if cmd[0] in ['devmode', 'devmap']:
         if cmd[1] == '0':
             globalLogic.dev = 0
