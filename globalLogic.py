@@ -14,6 +14,7 @@ import devTools
 
 stop = 0
 dev = 0
+activeActor = 0
 keys = {}
 
 
@@ -21,7 +22,6 @@ def main():
     global stop, dev, keys, activeActor
     init()
     activeVar = None
-    activeActor = 0
     actionVar = None
     display(activeActor)
     while(1):  # game logic
