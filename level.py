@@ -10,6 +10,7 @@ import time
 import echo
 import sys
 import keyboard
+import globalLogic
 from copy import deepcopy
 
 SAVE_GAME_PATH = "/saves"
@@ -243,7 +244,11 @@ def paint_tile(tile):
         paint += EXIT_COLOR + "░" + BASE_COLOR
     elif tile[0] in "P":
         player_ID = int(tile[1:])
-        paint += DIRECTION_INDEX[player.players[player_ID].facing]
+        if globalLogic.activeActor == player_ID:
+            actual_player_color = "\033[38;2;0;200;0m"
+        else:
+            actual_player_color = ""
+        paint += actual_player_color + DIRECTION_INDEX[player.players[player_ID].facing] + BASE_COLOR
     elif tile[0] == "M":
         monsterID = int(tile[1:])
         paint += MONSTER_COLOR + DIRECTION_INDEX[enemy.enemies[monsterID].facing] + BASE_COLOR

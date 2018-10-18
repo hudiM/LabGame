@@ -91,8 +91,10 @@ def main_menu():
         key = keyboard.getch()
         if key in ["n", "1"]:
             new_game_menu()
+            break
         elif key in ["l", "2"]:
             load_game_menu()
+            break
         elif key in ["e", "3"]:
             print("Ending game")
             break
@@ -152,11 +154,12 @@ def print_new_game_menu(levels, list_stage):
 
 
 def start_new_game(filename):
-    os.system('clear')
     while True:
+        os.system('clear')
         number_of_players = input("Number of players (1 or 2): ")
-        if number_of_players.isdigit and int(number_of_players) in [1, 2]:
-            break
+        if number_of_players.isdigit():
+            if int(number_of_players) in [1, 2]:
+                break
     player_names = []
     for i in range(int(number_of_players)):
         while True:
@@ -167,7 +170,6 @@ def start_new_game(filename):
             else:
                 print("Please input a name!")
     level.load_level(sys.path[0]+'/maps/level1.inf', int(number_of_players), player_names)
-    level.save_game('level1')
     error = globalLogic.main()
     return error
 
