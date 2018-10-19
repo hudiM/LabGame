@@ -1,20 +1,29 @@
-# LabGame
+# Dungeons & Bugs
 
 Welcome! ![alt text](https://static-cdn.jtvnw.net/emoticons/v1/425618/1.0 "LuL")
 
 # Controls
 Key | Action
 --- | ---
+Player 1 | 
 `W` | Move forward
 `S` | Move backward
 `A` | Turn left
 `D` | Turn right
 `F` | Attack
+Player 2 | 
+`Up Arrow` | Move forward
+`Down Arrow` | Move backward
+`Left Arrow` | Turn left
+`Right Arrow` | Turn right
+`í` | Attack
+Others | 
 `R` | Wait
-`E` | Exit
+`E` | Menu
 `0` | Developer console
 
 # Console commands
+Warning! Wrong use of these might cause unexpected behaviour.
 ## Player commands
 Command | Effect
 --- | ---
@@ -25,10 +34,10 @@ Command | Effect
 ## Enemy commands
 Command | Effect
 --- | ---
-`enemy spawn <x> <y> <0-3> <health> <hearing range>` | Spawns an enemy with given parameters
+`enemy spawn <x> <y> <facing (0-3)> <health> <hearing range>` | Spawns an enemy with given parameters
 
 ## Display commands
 Command | Effect
 --- | ---
-`devmap <0-2>` | Switch between map display modes
+`devmap <0-3>` | Switch between map display modes
 `printerr <msg>` | Prints given error message
