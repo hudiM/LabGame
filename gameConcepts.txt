@@ -40,8 +40,6 @@ tutorialMap
 ▓	-	wall
 /	-	invisible wall
 P	-	player
-L	-	low cover
-H	-	high cover
 
 		▓/////L/////▓								 ▓/////L/////▓
 		▓	  L	    ▓								 ▓	   L	 ▓

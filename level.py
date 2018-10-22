@@ -9,7 +9,6 @@ import math
 import time
 import echo
 import sys
-import keyboard
 import globalLogic
 from copy import deepcopy
 

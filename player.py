@@ -1,8 +1,4 @@
-from common import printDebug
-from common import printErr
 import level
-import time
-import keyboard
 import enemy
 import globalLogic
 import echo
@@ -135,8 +131,6 @@ class Player:
                         if globalLogic.stop > 0 or players.count(self) < 1:
                             return enemyAct
                         self.updateHearZone()
-        else:
-            printErr('Something went wrong')
         return enemyAct
 
     def directionMove(self, direction):

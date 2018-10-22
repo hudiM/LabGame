@@ -1,17 +1,13 @@
-import level
 import os
 import common
-import player
-import time
-import sys
-import keyboard
-import echo
-import copy
-import color
-import enemy
-import developerConsole
 import devTools
+import developerConsole
+import keyboard
+import color
 import menu
+import level
+import player
+import enemy
 
 stop = 0
 dev = 0
@@ -24,46 +20,31 @@ def main():
     init()
     activeVar = None
     actionVar = None
+    keysP1 = ('w', 's', 'a', 'd', 'f', 'e', '0', '\r')
+    keysP2 = ('A', 'B', 'C', 'D', '-', 'e', '0', '\r')
     display(activeActor)
     while(1):  # game logic
         turnVar = 0
         while(turnVar < len(player.players)):  # one round
             key = keyboard.getch()
             os.system('clear')
-            for pid in player.players:
-                if pid.spawnid == 0 and activeActor == 0:
-                    if key in ('w', 's', 'a', 'd', 'f', 'e', '0', 'r'):
-                        actionVar = keys[key][0](*keys[key][1:])
-                        if actionVar is not None:
-                            activeActor = nextPlayerTurn(activeActor, 1)
-                            if actionVar == 'exit':
-                                activeActor = 1
-                            turnVar += 1
-                        if key == 'r':
-                            activeActor = nextPlayerTurn(activeActor, 1)
-                            turnVar += 1
-                            break
-                elif pid.spawnid == 1 and activeActor == 1:
-                    if key in ('A', 'B', 'C', 'D', 'í', 'e', '0', 'r'):
-                        actionVar = keys[key][0](*keys[key][1:])
-                        if actionVar is not None:
-                            activeActor = nextPlayerTurn(activeActor, 0)
-                            if actionVar == 'exit':
-                                activeActor = 0
-                            turnVar += 1
-                        if key == 'r':
-                            activeActor = nextPlayerTurn(activeActor, 0)
-                            turnVar += 1
-                            break
+            if (activeActor == 0 or len(player.players) == 1) and key in keysP1:  # player 1 turn
+                actionVar = keys[key][0](*keys[key][1:])
+                if actionVar is not None or key == '\r':
+                    activeActor = 1
+                    turnVar += 1
+            elif (activeActor == 1 or len(player.players) == 1) and key in keysP2:  # Player 2 turn
+                actionVar = keys[key][0](*keys[key][1:])
+                if actionVar is not None or key == '\r':
+                    activeActor = 0
+                    turnVar += 1
             display(activeActor, actionVar)
             if stop > 0:
                 break
-            if activeActor > 1:
+            if activeActor > len(player.players):
                 break
         if actionVar is not None:
             enemy.enemyAction()
-        if len(player.players) == 1:
-            activeActor = player.players[0].spawnid
         if stop > 0:
             break
     os.system('clear')
@@ -79,13 +60,6 @@ def main():
     return 1
 
 
-def nextPlayerTurn(currentActor, nextActor):
-    if len(player.players) == 1:
-        return currentActor
-    elif len(player.players) > 1:
-        return nextActor
-
-
 def stopGame(value=3):
     global stop
     stop = value
@@ -97,7 +71,7 @@ def init():
     stop = 0
     activeActor = 0
     keys = {}
-    keys['r'] = (enemy.enemyAction,)
+    keys['\r'] = (enemy.enemyAction,)
     keys['e'] = (menu.in_game_menu,)
     keys['0'] = (developerConsole.openConsole,)
     keys['w'] = (player.players[0].move, "forward")
@@ -110,7 +84,7 @@ def init():
         keys['B'] = (player.players[1].move, "backward")
         keys['D'] = (player.players[1].turn, "left")
         keys['C'] = (player.players[1].turn, "right")
-        keys['í'] = (player.players[1].attack,)
+        keys['-'] = (player.players[1].attack,)
     return
 
 

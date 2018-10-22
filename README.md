@@ -16,9 +16,9 @@ Up Arrow | Move forward
 Down Arrow | Move backward
 Left Arrow | Turn left
 Right Arrow | Turn right
-í | Attack
+\- | Attack
 Others | 
-R | Wait
+Enter | Wait
 E | Menu
 0 | Developer console
 
@@ -40,4 +40,3 @@ Command | Effect
 Command | Effect
 --- | ---
 `devmap <0-3>` | Switch between map display modes
-`printerr <msg>` | Prints given error message

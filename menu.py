@@ -3,7 +3,6 @@ import keyboard
 import level
 import sys
 import globalLogic
-import time
 import color
 import common
 

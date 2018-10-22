@@ -1,11 +1,6 @@
-from common import printErr
-from common import printDebug
-from common import printDebugS
-from common import printDebugE
-from common import printWarning
 import globalLogic
 import player
-import random
+from random import randrange
 import level
 
 enemies = []
@@ -35,18 +30,6 @@ class Monster:
                     return 1
         return 0
 
-    def isPlayerAround(self):
-        for pid in player.players:
-            if pid.x == self.x and pid.y == self.y-1:
-                return 0
-            elif pid.x == self.x and pid.y == self.y+1:
-                return 2
-            elif pid.x == self.x+1 and pid.y == self.y:
-                return 1
-            elif pid.x == self.x-1 and pid.y == self.y:
-                return 3
-        return -1
-
     def isMonster(self, coords):
         for enemyEntity in enemies:
             if coords[0] == enemyEntity.x and coords[1] == enemyEntity.y:
@@ -69,7 +52,7 @@ class Monster:
         return
 
     def move(self):
-        randomMove = random.randrange(0, 5)
+        randomMove = randrange(0, 5)
         if randomMove < 4:
             self.updateCoords()
             if self.isPassable(self.d[self.facing]):
@@ -90,33 +73,7 @@ class Monster:
             self.autoFacing()
         elif randomMove == 5:
             pass
-        else:
-            common.printErr(f'monster movement error {randomMove} is out of range (0-6)')
         self.facing %= 4
-
-    def lookForPlayer(self):
-        if self.isPlayerAround() == -1:
-            self.move()
-        elif self.isPlayerAround() == 0:
-            if self.facing == 0:
-                self.attackPlayer()
-            else:
-                self.facing = 0
-        elif self.isPlayerAround() == 1:
-            if self.facing == 1:
-                self.attackPlayer()
-            else:
-                self.facing = 1
-        elif self.isPlayerAround() == 2:
-            if self.facing == 2:
-                self.attackPlayer()
-            else:
-                self.facing = 2
-        elif self.isPlayerAround() == 3:
-            if self.facing == 3:
-                self.attackPlayer()
-            else:
-                self.facing = 3
 
     def lookupPlayerInHearingDistance(self):
         closestPlayer = 0
@@ -166,7 +123,7 @@ class Monster:
                             globalLogic.keys.pop('B')
                             globalLogic.keys.pop('C')
                             globalLogic.keys.pop('D')
-                            globalLogic.keys.pop('í')
+                            globalLogic.keys.pop('-')
                     except:
                         pass
         return
