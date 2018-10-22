@@ -71,6 +71,7 @@ def init():
     stop = 0
     activeActor = 0
     keys = {}
+    dev = 0
     keys['\r'] = (enemy.enemyAction,)
     keys['e'] = (menu.in_game_menu,)
     keys['0'] = (developerConsole.openConsole,)
